@@ -7,12 +7,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class DefaultController extends Controller
+class BookFormController extends Controller
 {
     /**
-     * @Route("/", name="homepage")
+     * @Route("/book/form/add")
      */
-    public function indexAction()
+    public function add()
     {
         return $this->render('library/index.html.twig', [
             'title' => "Библиотека книг",
@@ -33,10 +33,10 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/add/{name}")
+     * @Route("/book/form/edit/{bookId}")
      */
-    public function addAction($name)
+
+    public function edit($bookId)
     {
-        return new Response("Add " . $name);
     }
 }
