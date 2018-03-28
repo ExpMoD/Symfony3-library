@@ -2,17 +2,18 @@
 
 namespace AppBundle\Controller;
 
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class BookFormController extends Controller
+class BookController extends Controller
 {
     /**
-     * @Route("/book/form/add")
+     * @Route("/")
      */
-    public function add()
+
+    public function index()
     {
         return $this->render('library/index.html.twig', [
             'title' => "Библиотека книг",
@@ -32,11 +33,42 @@ class BookFormController extends Controller
         ]);
     }
 
+
+    /**
+     * @Route("/book/action/add")
+     * @Method("POST")
+     */
+
+    public function addBookAction()
+    {
+    }
+
+
+    /**
+     * @Route("/book/form/add")
+     */
+
+    public function addBookForm()
+    {
+    }
+
+
+    /**
+     * @Route("/book/action/edit")
+     * @Method("POST")
+     */
+
+    public function editBookAction()
+    {
+        return new Response("Okey");
+    }
+
+
     /**
      * @Route("/book/form/edit/{bookId}")
      */
 
-    public function edit($bookId)
+    public function editBookForm($bookId)
     {
     }
 }
