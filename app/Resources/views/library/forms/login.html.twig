@@ -1,0 +1,28 @@
+{% extends 'library/base.html.twig' %}
+
+{% block title %}  Авторизация {% endblock %}
+
+
+{% block body %}
+
+    {% if errors %}
+        <div class="form-error">
+            {{ error.messageKey }}
+        </div>
+
+        <br>
+    {% endif %}
+    <form action="{{ path('login') }}" method="post">
+        <label for="username">Имя пользователя:</label>
+        <br>
+        <input type="text" name="_username" id="username" value="{{ username }}">
+        <br>
+        <label for="password">Пароль:</label>
+        <br>
+        <input type="password" name="_password" id="password">
+        <br>
+        <br>
+        <input type="submit">
+    </form>
+
+{% endblock %}

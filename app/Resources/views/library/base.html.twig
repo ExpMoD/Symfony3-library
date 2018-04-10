@@ -12,7 +12,13 @@
 <body>
 <div class="wrapper">
     <div class="block header">
-        {% block header %} {% endblock %}
+        {% block header %}
+            {% if app.user %}
+
+            {% else %}
+
+            {% endif %}
+        {% endblock %}
     </div>
 
     <div class="block body">

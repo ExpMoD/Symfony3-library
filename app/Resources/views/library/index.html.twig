@@ -1,4 +1,4 @@
-{% extends 'library/structure.html.twig' %}
+{% extends 'library/base.html.twig' %}
 
 {% block title %} {{ title }} {% endblock %}
 
@@ -7,17 +7,17 @@
     <div class="book-list">
         {% for book in books %}
             <div class="book-list-row">
-                <div class="book-list-row-cover"></div>
-                <div class="book-list-row-name"></div>
-                <div class="book-list-row-author"></div>
+                <div class="book-list-row-cover">{{ book.NAME }}</div>
+                <div class="book-list-row-name">{{ book.AUTHOR }}</div>
+                <div class="book-list-row-author">{{ book.COVER }}</div>
 
                 {%  if book.ALLOW_DOWNLOADING %}
                     <div class="book-list-row-download"></div>
                 {% endif %}
-
-                {% if isAuthorized %}
-                    <div class="book-list-row-edit"><a href="/book/edit/{{ book.ID }}"></a></div>
-                {% endif %}
+                {{ dump(app) }}
+                {#{% if isAuthorized %}#}
+                    {#<div class="book-list-row-edit"><a href="/book/edit/{{ book.ID }}"></a></div>#}
+                {#{% endif %}#}
             </div>
         {% endfor %}
     </div>
