@@ -15,3 +15,7 @@
 .wrapper .block.body {
   min-height: 300px;
 }
+.form-error {
+  font-size: 12px;
+  color: #ab0815;
+}
