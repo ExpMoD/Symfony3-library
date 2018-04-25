@@ -48,7 +48,7 @@ class User implements UserInterface, \Serializable
     /**
      * @var array
      *
-     * @ORM\Column(type="json")
+     * @ORM\Column(type="json_array", nullable=true)
      */
     private $roles = [];
 
@@ -78,13 +78,13 @@ class User implements UserInterface, \Serializable
     }
 
     /**
-     * Returns the roles or permissions granted to the user for security.
+     * @return array (Role|string)[] The user roles
      */
     public function getRoles(): array
     {
         $roles = $this->roles;
 
-        if (empty($roles)) {
+        if (!in_array('ROLE_USER', $roles)) {
             $roles[] = 'ROLE_USER';
         }
 
