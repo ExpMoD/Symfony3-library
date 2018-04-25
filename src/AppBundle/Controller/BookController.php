@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 class BookController extends Controller
 {
     /**
-     * @Route("/")
+     * @Route("/", name="index")
      */
 
     public function index()
@@ -19,42 +19,49 @@ class BookController extends Controller
             'title' => "Библиотека книг",
             'books' => [
                 [
+                    "ID" => 1,
                     "NAME" => "One day",
                     "AUTHOR" => "J.J. Abee",
                     "COVER" => "/covers/jpg1.png",
                     "URL" => "/download/book/book1.pdf",
-                    "ALLOW_DOWNLOADING" => false],
-                ["NAME" => "Two day",
+                    "ALLOW_DOWNLOADING" => false
+                ],
+                [
+                    "ID" => 2,
+                    "NAME" => "Two day",
                     "AUTHOR" => "J.J. Abee",
                     "COVER" => "/covers/jpg2.png",
                     "URL" => "/download/book/book2.pdf",
-                    "ALLOW_DOWNLOADING" => true],
+                    "ALLOW_DOWNLOADING" => true
+                ],
             ]
         ]);
     }
 
 
     /**
-     * @Route("/book/action/add")
+     * @Route("/book/action/add", name="addBookAction")
      * @Method("POST")
      */
 
     public function addBookAction()
     {
+        return new Response("Okey");
     }
 
 
     /**
-     * @Route("/book/form/add")
+     * @Route("/book/form/add", name="addBookForm")
      */
 
     public function addBookForm()
     {
+        return new Response("Okey");
     }
 
 
     /**
-     * @Route("/book/action/edit")
+     * @Route("/book/action/edit", name="editBookAction")
      * @Method("POST")
      */
 
@@ -65,10 +72,11 @@ class BookController extends Controller
 
 
     /**
-     * @Route("/book/form/edit/{bookId}")
+     * @Route("/book/form/edit/{bookId}", name="editBookForm")
      */
 
     public function editBookForm($bookId)
     {
+        return new Response($bookId);
     }
 }
