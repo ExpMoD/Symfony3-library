@@ -1,24 +1,58 @@
 //Created by style on 27.03.18
+@import "fonts.styl"
+
+
+*
+  font-family: "Roboto"
+
 
 .wrapper
   margin 20px auto
   width 900px
 
-
   .block
     border 1px solid #999
     border-radius 5px
     margin-bottom 10px
-    padding: 10px
+    padding 10px
 
     &.header
       height 50px
       padding 0
+      display flex
+
+      .header-title
+        color #555
+        font-weight: bold
+        font-size: 20px
+        flex-grow 1
+        justify-content start !important
+
+        text-decoration: none
+
+        &:hover
+          color: #000
+
+      .header-subblock
+        height: 100%
+        display flex
+        justify-content center
+        align-items center
+        padding-left: 10px
+        padding-right: 10px
+
+      .button
+        color #555
+        text-decoration: none
+
+        &:hover
+          color: #000
+
 
     &.body
       min-height 300px
 
 
 .form-error
-  font-size: 12px
+  font-size 12px
   color #ab0815

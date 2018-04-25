@@ -1,3 +1,18 @@
+@font-face {
+  font-family: "Roboto";
+  src: local(Roboto Regular), url("/fonts/roboto/Roboto-Regular.eot");
+  src: url("/fonts/roboto/Roboto-Regular.eot?#iefix") format("embedded-opentype"), url("/fonts/roboto/Roboto-Regular.woff2") format("woff2"), url("/fonts/roboto/Roboto-Regular.woff") format("woff"), url("/fonts/roboto/Roboto-Regular.ttf") format("truetype");
+  font-weight: 400;
+}
+@font-face {
+  font-family: "Roboto";
+  src: url("/fonts/roboto/Roboto-Bold.eot");
+  src: url("/fonts/roboto/Roboto-Bold.eot?#iefix") format("embedded-opentype"), url("/fonts/roboto/Roboto-Bold.woff2") format("woff2"), url("/fonts/roboto/Roboto-Bold.woff") format("woff"), url("/fonts/roboto/Roboto-Bold.ttf") format("truetype");
+  font-weight: 700;
+}
+* {
+  font-family: "Roboto";
+}
 .wrapper {
   margin: 20px auto;
   width: 900px;
@@ -11,6 +26,33 @@
 .wrapper .block.header {
   height: 50px;
   padding: 0;
+  display: flex;
+}
+.wrapper .block.header .header-title {
+  color: #555;
+  font-weight: bold;
+  font-size: 20px;
+  flex-grow: 1;
+  justify-content: start !important;
+  text-decoration: none;
+}
+.wrapper .block.header .header-title:hover {
+  color: #000;
+}
+.wrapper .block.header .header-subblock {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.wrapper .block.header .button {
+  color: #555;
+  text-decoration: none;
+}
+.wrapper .block.header .button:hover {
+  color: #000;
 }
 .wrapper .block.body {
   min-height: 300px;

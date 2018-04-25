@@ -12,12 +12,11 @@
                 <div class="book-list-row-author">{{ book.COVER }}</div>
 
                 {%  if book.ALLOW_DOWNLOADING %}
-                    <div class="book-list-row-download"></div>
+                    <div class="book-list-row-download"><a href="{{  }}"></a></div>
                 {% endif %}
-                {{ dump(app.user) }}
-                {#{% if isAuthorized %}#}
-                    {#<div class="book-list-row-edit"><a href="/book/edit/{{ book.ID }}"></a></div>#}
-                {#{% endif %}#}
+                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                    <div class="book-list-row-edit"><a href="{{ path('editBookForm', {"bookId": book.ID}) }}">Редактировать</a></div>
+                {% endif %}
             </div>
         {% endfor %}
     </div>
