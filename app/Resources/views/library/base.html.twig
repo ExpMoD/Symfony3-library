@@ -18,6 +18,9 @@
             {% else %}
 
             {% endif %}
+            {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                <a href="{{ logout_path() }}">Выйти</a>
+            {% endif %}
         {% endblock %}
     </div>
 

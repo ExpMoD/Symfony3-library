@@ -14,7 +14,7 @@
                 {%  if book.ALLOW_DOWNLOADING %}
                     <div class="book-list-row-download"></div>
                 {% endif %}
-                {{ dump(app) }}
+                {{ dump(app.user) }}
                 {#{% if isAuthorized %}#}
                     {#<div class="book-list-row-edit"><a href="/book/edit/{{ book.ID }}"></a></div>#}
                 {#{% endif %}#}

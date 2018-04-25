@@ -9,12 +9,12 @@
 namespace AppBundle\DataFixtures\ORM;
 
 use AppBundle\Entity\User;
-use Doctrine\Common\DataFixtures\FixtureInterface;
+use Doctrine\Bundle\FixturesBundle\ORMFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class LoadUserData implements FixtureInterface, ContainerAwareInterface
+class LoadUserData implements ORMFixtureInterface, ContainerAwareInterface
 {
     private $container;
 
@@ -32,7 +32,6 @@ class LoadUserData implements FixtureInterface, ContainerAwareInterface
         $user->setPassword($password);
 
         $manager->persist($user);
-
         $manager->flush();
     }
 

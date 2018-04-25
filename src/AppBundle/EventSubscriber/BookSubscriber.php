@@ -1,4 +1,5 @@
 <?php
+
 namespace AppBundle\EventSubscriber;
 
 use Doctrine\Common\EventSubscriber;
