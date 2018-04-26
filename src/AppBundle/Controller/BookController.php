@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class BookController extends Controller
@@ -40,43 +41,21 @@ class BookController extends Controller
 
 
     /**
-     * @Route("/book/action/add", name="addBookAction")
-     * @Method("POST")
+     * @Route("/book/add", name="addBook")
      */
 
-    public function addBookAction()
+    public function addBookAction(Request $request)
     {
-        return new Response("Okey");
+        return $this->render('library/forms/addBook.html.twig');
     }
 
 
     /**
-     * @Route("/book/form/add", name="addBookForm")
+     * @Route("/book/edit/{bookId}", name="editBook")
      */
 
-    public function addBookForm()
+    public function editBookAction($bookId, Request $request)
     {
-        return new Response("Okey");
-    }
-
-
-    /**
-     * @Route("/book/action/edit", name="editBookAction")
-     * @Method("POST")
-     */
-
-    public function editBookAction()
-    {
-        return new Response("Okey");
-    }
-
-
-    /**
-     * @Route("/book/form/edit/{bookId}", name="editBookForm")
-     */
-
-    public function editBookForm($bookId)
-    {
-        return new Response($bookId);
+        return new Response($bookId . ": " . $request->getMethod());
     }
 }
