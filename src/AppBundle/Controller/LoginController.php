@@ -3,16 +3,18 @@
 namespace AppBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
-class LoginController extends Controller
+class LoginController extends AbstractController
 {
     /**
      * @Route("/login", name="login")
      */
-    public function loginAction(Request $request, AuthenticationUtils $authenticationUtils)
+    public function loginAction(AuthenticationUtils $authenticationUtils) : Response
     {
         $errors = $authenticationUtils->getLastAuthenticationError();
 
@@ -27,7 +29,7 @@ class LoginController extends Controller
     /**
      * @Route("/logout", name="logout")
      */
-    public function logoutAction()
+    public function logoutAction() : void
     {
     }
 }
