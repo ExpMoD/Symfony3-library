@@ -4,24 +4,21 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\File;
 use http\Exception;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class FileController extends Controller
 {
-    /**
-     * @Route("/action/uploadFile")
-     * @Method("POST")
-     */
-    public function uploadFileAction(Request $request)
+    public function uploadFileAction($file, Request $request)
     {
+        //return new Response(var_dump($file));
         try {
-            $file = $request->files->get('my_file');
+            //$file = $request->files->get('file');
             $fileName = md5(uniqid()) . '.' . $file->guessExtension();
             $original_name = $file->getClientOriginalName();
             $file->move($this->container->getParameter('file_directory'), $fileName);
@@ -38,6 +35,7 @@ class FileController extends Controller
                 'file_id' => $file_entity->getId()
             );
             $response = new JsonResponse($array, 200);
+            dump($response);
             return $response;
         } catch (Exception $e) {
             $array = array('status' => 0);
@@ -52,7 +50,7 @@ class FileController extends Controller
     public function downloadFileAction($id)
     {
         try {
-            $file = $this->getDoctrine()->getRepository('AppBundle:UploadedFile')->find($id);
+            $file = $this->getDoctrine()->getRepository('AppBundle:File')->find($id);
             if (!$file) {
                 $array = array(
                     'status' => 0,
