@@ -1,46 +1,50 @@
 <?php
 
-namespace AppBundle\Controller;
+namespace AppBundle\Services;
 
 use AppBundle\Entity\File;
 use http\Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
-class FileController extends Controller
+class FileService
 {
-    public function uploadFileAction($file, Request $request)
+    /**
+     * @var string
+     */
+    private $fileDirectory;
+
+    public function __construct(ParameterBagInterface $params)
     {
-        //return new Response(var_dump($file));
+        $this->fileDirectory = $params->get('file_directory');
+    }
+
+    public function uploadFileAction($file)
+    {
         try {
-            //$file = $request->files->get('file');
+            var_dump($this->fileDirectory);
+            /*
             $fileName = md5(uniqid()) . '.' . $file->guessExtension();
             $original_name = $file->getClientOriginalName();
-            $file->move($this->container->getParameter('file_directory'), $fileName);
-            $file_entity = new File();
-            $file_entity->setFileName($fileName);
-            $file_entity->setActualName($original_name);
-            $file_entity->setCreationTime(new \DateTime());
+            $file->move($this->fileDirectory, $fileName);
+            $fileEntity = new File();
+            $fileEntity->setFileName($fileName);
+            $fileEntity->setActualName($original_name);
+            $fileEntity->setCreationTime(new \DateTime());
 
             $manager = $this->getDoctrine()->getManager();
-            $manager->persist($file_entity);
+            $manager->persist($fileEntity);
             $manager->flush();
-            $array = array(
-                'status' => 1,
-                'file_id' => $file_entity->getId()
-            );
-            $response = new JsonResponse($array, 200);
-            dump($response);
-            return $response;
+            return $fileEntity;*/
         } catch (Exception $e) {
-            $array = array('status' => 0);
-            $response = new JsonResponse($array, 400);
-            return $response;
+            return false;
         }
     }
 

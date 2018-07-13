@@ -2,6 +2,8 @@
 # https://symfony.com/doc/current/service_container.html
 parameters:
     #parameter_name: value
+    file_directory: '%kernel.root_dir%/../web/uploads/files'
+    image_directory: '%kernel.root_dir%/../web/uploads/images'
 
 services:
     # default configuration for services in *this* file
@@ -32,6 +34,11 @@ services:
     AppBundle\Repository\:
         resource: '../../src/AppBundle/Repository'
         tags: ['doctrine.repository_service']
+
+    file_handler_service:
+        class: AppBundle\Services\FileService
+        bind:
+            $fileDirectory: '%kernel.project_dir%'
 
     # add more services, or override services that need manual wiring
     # AppBundle\Service\ExampleService:

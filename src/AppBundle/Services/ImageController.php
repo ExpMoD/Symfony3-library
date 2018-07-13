@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Controller;
+namespace AppBundle\Services;
 
 use AppBundle\Entity\File;
 use http\Exception;

@@ -52,10 +52,20 @@ class BookController extends Controller
     {
         $paramsArray = [];
 
+        $fileController = $this->get('file_handler_service');
+        $file = $fileController->uploadFileAction($request->files->get('file'));
+
         try {
-            if ($request->getMethod() == 'POST') {
+            /*if ($request->getMethod() == 'POST') {
                 $response = $this->forward('AppBundle:File:uploadFile', ['file' => $request->files->get('file')]);
                 $json = json_decode($response->getContent(), true);
+            }*/
+            if ($request->getMethod() == 'POST') {
+                $fileController = $this->get('file_handler_service');
+
+                $file = $fileController->uploadFileAction($request->files->get('file'));
+
+                var_dump($file->getId());
             }
         } catch (\Exception $e) {
         }
@@ -100,7 +110,11 @@ class BookController extends Controller
 
         $book = $manager->getRepository('AppBundle:Book')->find(2);
 
+        $fileController = $this->get('file_controller_service');
 
-        return new Response($book->getCover()->getFileName());
+        $fileController->uploadFileAction($request->files->get('file'));
+
+
+        return new Response(/*$book->getCover()->getFileName()*/);
     }
 }
