@@ -2,13 +2,15 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\AppBundle;
 use AppBundle\Entity\Book;
 use AppBundle\Entity\File;
 use AppBundle\Entity\Image;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use AppBundle\Services\FileHandler;
+use AppBundle\Services\ImageHandler;
+use Doctrine\ORM\ORMException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -17,7 +19,6 @@ class BookController extends Controller
     /**
      * @Route("/", name="index")
      */
-
     public function index()
     {
         return $this->render('library/index.html.twig', [
@@ -43,40 +44,38 @@ class BookController extends Controller
         ]);
     }
 
-
     /**
      * @Route("/book/add", name="addBook")
      */
-
     public function addBookAction(Request $request)
     {
         $paramsArray = [];
-
-        $fileController = $this->get('file_handler_service');
-        $file = $fileController->uploadFileAction($request->files->get('file'));
-
         try {
-            /*if ($request->getMethod() == 'POST') {
-                $response = $this->forward('AppBundle:File:uploadFile', ['file' => $request->files->get('file')]);
-                $json = json_decode($response->getContent(), true);
-            }*/
             if ($request->getMethod() == 'POST') {
-                $fileController = $this->get('file_handler_service');
+                $fileController = new FileHandler($this->container, $this->getDoctrine());
+                $imageController = new ImageHandler($this->container, $this->getDoctrine());
 
-                $file = $fileController->uploadFileAction($request->files->get('file'));
+                $uploadedFile = $request->files->get('file');
+                $uploadedImage = $request->files->get('cover');
 
-                var_dump($file->getId());
+                if (get_class($uploadedFile) == UploadedFile::class) {
+                    $fileEntity = $fileController->upload($uploadedFile);
+                }
+
+                if (get_class($uploadedImage) == UploadedFile::class) {
+                    $imageEntity = $fileController->upload($uploadedImage);
+                }
+                //var_dump($file->getId());
             }
-        } catch (\Exception $e) {
+        } catch (ORMException $e) {
         }
+
         return $this->render('library/forms/addBook.html.twig');
     }
-
 
     /**
      * @Route("/book/edit/{bookId}", name="editBook")
      */
-
     public function editBookAction($bookId, Request $request)
     {
         /*$bookEntity = new Book();
@@ -106,13 +105,13 @@ class BookController extends Controller
         $manager->persist($bookEntity);
         $manager->flush();*/
 
-        $manager = $this->getDoctrine()->getManager();
+        /*$manager = $this->getDoctrine()->getManager();
 
         $book = $manager->getRepository('AppBundle:Book')->find(2);
 
-        $fileController = $this->get('file_controller_service');
+        $fileController = $this->get('file_handler_service');
 
-        $fileController->uploadFileAction($request->files->get('file'));
+        $fileController->uploadFileAction($request->files->get('file'));*/
 
 
         return new Response(/*$book->getCover()->getFileName()*/);

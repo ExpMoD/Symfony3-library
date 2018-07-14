@@ -35,11 +35,6 @@ services:
         resource: '../../src/AppBundle/Repository'
         tags: ['doctrine.repository_service']
 
-    file_handler_service:
-        class: AppBundle\Services\FileService
-        bind:
-            $fileDirectory: '%kernel.project_dir%'
-
     # add more services, or override services that need manual wiring
     # AppBundle\Service\ExampleService:
     #     arguments:
