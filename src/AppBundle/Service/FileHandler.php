@@ -1,8 +1,8 @@
 <?php
 
-namespace AppBundle\Services;
+namespace AppBundle\Service;
 
-use AppBundle\Entity\Image;
+use AppBundle\Entity\File;
 use http\Exception;
 use Doctrine\ORM\ORMException;
 use Doctrine\ORM\EntityManager;
@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class ImageHandler
+class FileHandler
 {
     /**
      * @var ContainerInterface
@@ -51,7 +51,7 @@ class ImageHandler
 
     /**
      * @param UploadedFile $file
-     * @return Image|bool
+     * @return File|bool
      */
     public function upload(UploadedFile $file)
     {
@@ -59,14 +59,14 @@ class ImageHandler
             $fileName = md5(uniqid()) . '.' . $file->guessExtension();
             $original_name = $file->getClientOriginalName();
             $file->move($this->container->getParameter('file_directory'), $fileName);
-            $imageEntity = new Image();
-            $imageEntity->setFileName($fileName);
-            $imageEntity->setActualName($original_name);
-            $imageEntity->setCreationTime(new \DateTime());
+            $fileEntity = new File();
+            $fileEntity->setFileName($fileName);
+            $fileEntity->setActualName($original_name);
+            $fileEntity->setCreationTime(new \DateTime());
 
-            $this->entityManager->persist($imageEntity);
+            $this->entityManager->persist($fileEntity);
             $this->entityManager->flush();
-            return $imageEntity;
+            return $fileEntity;
         } catch (ORMException $e) {
             return false;
         }
@@ -74,11 +74,11 @@ class ImageHandler
 
     /**
      * @param int $id
-     * @return Image|null|object
+     * @return File|null|object
      */
     public function get(int $id)
     {
-        $fileEntity = $this->managerRegistry->getRepository('AppBundle:Image')->find($id);
+        $fileEntity = $this->managerRegistry->getRepository('AppBundle:File')->find($id);
 
         return $fileEntity;
     }
@@ -105,10 +105,10 @@ class ImageHandler
     }
 
     /**
-     * @param Image $entity
+     * @param File $entity
      * @return bool
      */
-    public function delete(Image $entity)
+    public function delete(File $entity)
     {
         try {
             if (!!$entity) {
