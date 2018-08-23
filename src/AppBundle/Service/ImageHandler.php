@@ -57,11 +57,11 @@ class ImageHandler
     {
         try {
             $fileName = md5(uniqid()) . '.' . $file->guessExtension();
-            $original_name = $file->getClientOriginalName();
+            $originalName = $file->getClientOriginalName();
             $file->move($this->container->getParameter('file_directory'), $fileName);
             $imageEntity = new Image();
             $imageEntity->setFileName($fileName);
-            $imageEntity->setActualName($original_name);
+            $imageEntity->setActualName($originalName);
             $imageEntity->setCreationTime(new \DateTime());
 
             $this->entityManager->persist($imageEntity);

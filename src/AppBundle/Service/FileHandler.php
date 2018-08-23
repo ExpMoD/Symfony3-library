@@ -57,11 +57,11 @@ class FileHandler
     {
         try {
             $fileName = md5(uniqid()) . '.' . $file->guessExtension();
-            $original_name = $file->getClientOriginalName();
+            $originalName = $file->getClientOriginalName();
             $file->move($this->container->getParameter('file_directory'), $fileName);
             $fileEntity = new File();
             $fileEntity->setFileName($fileName);
-            $fileEntity->setActualName($original_name);
+            $fileEntity->setActualName($originalName);
             $fileEntity->setCreationTime(new \DateTime());
 
             $this->entityManager->persist($fileEntity);
