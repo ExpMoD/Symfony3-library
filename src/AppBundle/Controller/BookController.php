@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Book;
 use AppBundle\Entity\File;
 use AppBundle\Entity\Image;
+use AppBundle\Form\BookType;
 use AppBundle\Service\FileHandler;
 use AppBundle\Service\ImageHandler;
 use Doctrine\ORM\ORMException;
@@ -50,8 +51,23 @@ class BookController extends Controller
     public function addBookAction(Request $request)
     {
         $paramsArray = [];
+
+        $book = new Book();
+
+        $form = $this->createForm(BookType::class, $book);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            var_dump($book->getName());
+            unset($book);
+            unset($form);
+            $book = new Book();
+            $form = $this->createForm(BookType::class, $book);
+        }
+
         try {
-            if ($request->getMethod() == 'POST') {
+            /*if ($request->getMethod() == 'POST') {
                 $fileController = new FileHandler($this->container, $this->getDoctrine());
                 $imageController = new ImageHandler($this->container, $this->getDoctrine());
 
@@ -66,11 +82,13 @@ class BookController extends Controller
                     $imageEntity = $fileController->upload($uploadedImage);
                 }
                 //var_dump($file->getId());
-            }
+            }*/
         } catch (ORMException $e) {
         }
 
-        return $this->render('library/forms/addBook.html.twig');
+        return $this->render('library/forms/addBook.html.twig', [
+            'form' => $form->createView()
+        ]);
     }
 
     /**

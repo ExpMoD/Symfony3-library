@@ -6,7 +6,7 @@
  * Time: 11:31
  */
 
-namespace AppBundle\DataFixtures\ORM;
+namespace AppBundle\DataFixture\ORM;
 
 use AppBundle\Entity\User;
 use Doctrine\Bundle\FixturesBundle\ORMFixtureInterface;
