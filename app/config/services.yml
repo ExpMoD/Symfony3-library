@@ -3,7 +3,7 @@
 parameters:
     #parameter_name: value
     file_directory: '%kernel.root_dir%/../web/uploads/files'
-    image_directory: '%kernel.root_dir%/../web/uploads/images'
+    cover_directory: '%kernel.root_dir%/../web/uploads/covers'
 
 services:
     # default configuration for services in *this* file

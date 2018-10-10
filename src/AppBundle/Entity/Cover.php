@@ -7,10 +7,10 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * File
  *
- * @ORM\Table(name="images", schema="library")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\FileRepository")
+ * @ORM\Table(name="covers", schema="library")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\CoverRepository")
  */
-class Image
+class Cover
 {
     /**
      * @var int
@@ -43,6 +43,11 @@ class Image
     private $creationTime;
 
 
+    public function __construct()
+    {
+        $this->creationTime = new \DateTime();
+    }
+
     /**
      * Get id.
      *
@@ -58,7 +63,7 @@ class Image
      *
      * @param string $fileName
      *
-     * @return Image
+     * @return Cover
      */
     public function setFileName($fileName)
     {
@@ -82,7 +87,7 @@ class Image
      *
      * @param string $actualName
      *
-     * @return Image
+     * @return Cover
      */
     public function setActualName($actualName)
     {
@@ -106,7 +111,7 @@ class Image
      *
      * @param \DateTime $creationTime
      *
-     * @return Image
+     * @return Cover
      */
     public function setCreationTime($creationTime)
     {

@@ -3,12 +3,9 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Book;
-use AppBundle\Entity\File;
-use AppBundle\Entity\Image;
 use AppBundle\Form\BookType;
 use AppBundle\Service\FileHandler;
-use AppBundle\Service\ImageHandler;
-use Doctrine\ORM\ORMException;
+use AppBundle\Service\CoverHandler;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -52,38 +49,44 @@ class BookController extends Controller
     {
         $paramsArray = [];
 
-        $book = new Book();
+        $bookEntity = new Book();
 
-        $form = $this->createForm(BookType::class, $book);
+        $form = $this->createForm(BookType::class, $bookEntity);
 
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
-            var_dump($book->getName());
-            unset($book);
-            unset($form);
-            $book = new Book();
-            $form = $this->createForm(BookType::class, $book);
-        }
+            $fileController = new FileHandler($this->container, $this->getDoctrine());
+            $coverController = new CoverHandler($this->container, $this->getDoctrine());
 
-        try {
-            /*if ($request->getMethod() == 'POST') {
-                $fileController = new FileHandler($this->container, $this->getDoctrine());
-                $imageController = new ImageHandler($this->container, $this->getDoctrine());
+            $uploadedCover = $request->files->get('app_bundle_book')['cover'];
+            $uploadedFile = $request->files->get('app_bundle_book')['file'];
 
-                $uploadedFile = $request->files->get('file');
-                $uploadedImage = $request->files->get('cover');
+            $uploadedCover = $uploadedCover ? $uploadedCover : false;
 
-                if (get_class($uploadedFile) == UploadedFile::class) {
-                    $fileEntity = $fileController->upload($uploadedFile);
-                }
+            $uploadedFile = $uploadedFile ? $uploadedFile : false;
 
-                if (get_class($uploadedImage) == UploadedFile::class) {
-                    $imageEntity = $fileController->upload($uploadedImage);
-                }
-                //var_dump($file->getId());
-            }*/
-        } catch (ORMException $e) {
+            $coverEntity = false;
+            if ($uploadedCover && get_class($uploadedCover) == UploadedFile::class) {
+                $coverEntity = $coverController->upload($uploadedCover);
+            }
+
+            $fileEntity = false;
+            if ($uploadedFile && get_class($uploadedFile) == UploadedFile::class) {
+                $fileEntity = $fileController->upload($uploadedFile);
+            }
+
+            if (!!$coverEntity) {
+                $bookEntity->setCover($coverEntity);
+            }
+
+            if (!!$fileEntity) {
+                $bookEntity->setFile($fileEntity);
+            }
+
+            $this->getDoctrine()->getManager()->persist($bookEntity);
+            $this->getDoctrine()->getManager()->flush();
+
+            return $this->redirectToRoute('addBook');
         }
 
         return $this->render('library/forms/addBook.html.twig', [
@@ -96,42 +99,13 @@ class BookController extends Controller
      */
     public function editBookAction($bookId, Request $request)
     {
-        /*$bookEntity = new Book();
-        $fileEntity = new File();
-        $imageEntity = new Image();
-
-        $fileEntity->setFileName('f1');
-        $fileEntity->setActualName('f11');
-        $fileEntity->setCreationTime(new \DateTime());
-
-
-        $imageEntity->setFileName('i1');
-        $imageEntity->setActualName('i11');
-        $imageEntity->setCreationTime(new \DateTime());
-
-        $bookEntity->setName('Okey');
-        $bookEntity->setAuthor('Olo');
-        $bookEntity->setAllowDownloading(true);
-        $bookEntity->setDateOfReading(new \DateTime());
-        $bookEntity->setFile($fileEntity);
-        $bookEntity->setCover($imageEntity);
-
-
         $manager = $this->getDoctrine()->getManager();
-        $manager->persist($fileEntity);
-        $manager->persist($imageEntity);
-        $manager->persist($bookEntity);
-        $manager->flush();*/
 
-        /*$manager = $this->getDoctrine()->getManager();
-
-        $book = $manager->getRepository('AppBundle:Book')->find(2);
-
-        $fileController = $this->get('file_handler_service');
-
-        $fileController->uploadFileAction($request->files->get('file'));*/
+        $book = $manager->getRepository('AppBundle:Book')->find($bookId);
 
 
-        return new Response(/*$book->getCover()->getFileName()*/);
+        var_dump($book->getCover()->getFileName());
+
+        return new Response("");
     }
 }

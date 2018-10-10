@@ -2,7 +2,7 @@
 
 namespace AppBundle\Service;
 
-use AppBundle\Entity\Image;
+use AppBundle\Entity\Cover;
 use http\Exception;
 use Doctrine\ORM\ORMException;
 use Doctrine\ORM\EntityManager;
@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class ImageHandler
+class CoverHandler
 {
     /**
      * @var ContainerInterface
@@ -51,22 +51,21 @@ class ImageHandler
 
     /**
      * @param UploadedFile $file
-     * @return Image|bool
+     * @return Cover|bool
      */
     public function upload(UploadedFile $file)
     {
         try {
             $fileName = md5(uniqid()) . '.' . $file->guessExtension();
             $originalName = $file->getClientOriginalName();
-            $file->move($this->container->getParameter('file_directory'), $fileName);
-            $imageEntity = new Image();
-            $imageEntity->setFileName($fileName);
-            $imageEntity->setActualName($originalName);
-            $imageEntity->setCreationTime(new \DateTime());
+            $file->move($this->container->getParameter('cover_directory'), $fileName);
+            $entity = new Cover();
+            $entity->setFileName($fileName);
+            $entity->setActualName($originalName);
 
-            $this->entityManager->persist($imageEntity);
+            $this->entityManager->persist($entity);
             $this->entityManager->flush();
-            return $imageEntity;
+            return $entity;
         } catch (ORMException $e) {
             return false;
         }
@@ -74,11 +73,11 @@ class ImageHandler
 
     /**
      * @param int $id
-     * @return Image|null|object
+     * @return Cover|null|object
      */
     public function get(int $id)
     {
-        $fileEntity = $this->managerRegistry->getRepository('AppBundle:Image')->find($id);
+        $fileEntity = $this->managerRegistry->getRepository('Cover.php')->find($id);
 
         return $fileEntity;
     }
@@ -105,10 +104,10 @@ class ImageHandler
     }
 
     /**
-     * @param Image $entity
+     * @param Cover $entity
      * @return bool
      */
-    public function delete(Image $entity)
+    public function delete(Cover $entity)
     {
         try {
             if (!!$entity) {

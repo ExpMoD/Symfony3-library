@@ -43,6 +43,11 @@ class File
     private $creationTime;
 
 
+    public function __construct()
+    {
+        $this->creationTime = new \DateTime();
+    }
+
     /**
      * Get id.
      *

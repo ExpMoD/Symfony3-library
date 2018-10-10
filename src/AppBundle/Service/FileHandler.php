@@ -59,14 +59,13 @@ class FileHandler
             $fileName = md5(uniqid()) . '.' . $file->guessExtension();
             $originalName = $file->getClientOriginalName();
             $file->move($this->container->getParameter('file_directory'), $fileName);
-            $fileEntity = new File();
-            $fileEntity->setFileName($fileName);
-            $fileEntity->setActualName($originalName);
-            $fileEntity->setCreationTime(new \DateTime());
+            $entity = new File();
+            $entity->setFileName($fileName);
+            $entity->setActualName($originalName);
 
-            $this->entityManager->persist($fileEntity);
+            $this->entityManager->persist($entity);
             $this->entityManager->flush();
-            return $fileEntity;
+            return $entity;
         } catch (ORMException $e) {
             return false;
         }

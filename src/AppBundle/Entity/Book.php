@@ -41,9 +41,9 @@ class Book
     private $author;
 
     /**
-     * @var Image
+     * @var Cover
      *
-     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Image", mappedBy="id")
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Cover")
      * @ORM\JoinColumn(name="cover", referencedColumnName="id")
      */
     private $cover;
@@ -51,7 +51,7 @@ class Book
     /**
      * @var File
      *
-     * @ORM\OneToOne(targetEntity="AppBundle\Entity\File", mappedBy="id")
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\File")
      * @ORM\JoinColumn(name="file", referencedColumnName="id")
      */
     private $file;
@@ -69,6 +69,12 @@ class Book
      * @ORM\Column(name="allowDownloading", type="boolean")
      */
     private $allowDownloading;
+
+
+    public function __construct()
+    {
+        $this->dateOfReading = new \DateTime();
+    }
 
     /**
      * Get id.
@@ -131,7 +137,7 @@ class Book
     /**
      * Set cover.
      *
-     * @param Image $cover
+     * @param Cover $cover
      *
      * @return Book
      */
@@ -145,7 +151,7 @@ class Book
     /**
      * Get cover.
      *
-     * @return Image
+     * @return Cover
      */
     public function getCover()
     {
