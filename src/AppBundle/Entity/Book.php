@@ -151,11 +151,11 @@ class Book
     /**
      * Get cover.
      *
-     * @return Cover
+     * @return Cover|boolean
      */
     public function getCover()
     {
-        return $this->cover;
+        return (!is_null($this->cover)) ? $this->cover : false;
     }
 
     /**
@@ -175,11 +175,11 @@ class Book
     /**
      * Get file.
      *
-     * @return File
+     * @return File|boolean
      */
     public function getFile()
     {
-        return $this->file;
+        return (!is_null($this->file)) ? $this->file : false;
     }
 
     /**

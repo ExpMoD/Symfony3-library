@@ -4,16 +4,20 @@
     <div class="book-list">
         {% for book in books %}
             <div class="book-list-row">
-                <div class="book-list-row-cover">{{ book.NAME }}</div>
-                <div class="book-list-row-name">{{ book.AUTHOR }}</div>
-                <div class="book-list-row-author">{{ book.COVER }}</div>
+                <div class="book-list-row-cover">
+                    <img src="{{ book.COVER }}">
+                </div>
+                <div class="book-list-row-name">{{ book.NAME }}</div>
+                <div class="book-list-row-author">Автор: <b>{{ book.AUTHOR }}</b></div>
 
-                {%  if book.ALLOW_DOWNLOADING %}
-                    <div class="book-list-row-download"><a href="">Скачать</a></div>
-                {% endif %}
-                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                    <div class="book-list-row-edit"><a href="{{ path('editBook', {"bookId": book.ID}) }}">Редактировать</a></div>
-                {% endif %}
+                <div class="book-list-row-button_block">
+                    {%  if book.ALLOW_DOWNLOADING and book.FILE %}
+                        <div class="book-list-row-download"><a href="{{ book.FILE }}">Скачать</a></div>
+                    {% endif %}
+                    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                        <div class="book-list-row-edit"><a href="{{ path('editBook', {"bookId": book.ID}) }}">Редактировать</a></div>
+                    {% endif %}
+                </div>
             </div>
         {% endfor %}
     </div>

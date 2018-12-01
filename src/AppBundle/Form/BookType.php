@@ -8,6 +8,7 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
@@ -26,12 +27,10 @@ class BookType extends AbstractType
                     'required' => true,
                     'constraints' => [
                         new File([
-                            'maxSize' => '10M',
                             'mimeTypes' => [
                                 'image/png',
-                                'image/jpeg',
                                 'image/jpg',
-                                'image/gif',
+                                'image/jpeg'
                             ]
                         ])
                     ]
@@ -44,7 +43,7 @@ class BookType extends AbstractType
                     'required' => false,
                     'constraints' => [
                         new File([
-                            'maxSize' => '10M',
+                            'maxSize' => '5M',
                             'mimeTypes' => [
                                 'application/pdf',
                                 'application/x-pdf',
@@ -54,6 +53,7 @@ class BookType extends AbstractType
                     ]
                 )
             )
+            ->add('dateOfReading', DateTimeType::class)
             ->add('allowDownloading', CheckboxType::class, ['required' => false])
             ->add('submit', SubmitType::class, [
                 'attr' => [

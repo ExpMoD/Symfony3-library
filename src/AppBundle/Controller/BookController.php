@@ -3,6 +3,8 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Book;
+use AppBundle\Entity\Cover;
+use AppBundle\Entity\File;
 use AppBundle\Form\BookType;
 use AppBundle\Service\FileHandler;
 use AppBundle\Service\CoverHandler;
@@ -17,28 +19,28 @@ class BookController extends Controller
     /**
      * @Route("/", name="index")
      */
-    public function index()
+    public function index(int $page = 1)
     {
+        $coverDir = $this->container->getParameter('cover_path');
+        $fileDir = $this->container->getParameter('file_path');
+
+        $rsBooks = $this->getDoctrine()->getRepository('AppBundle:Book')->findBy([], ['dateOfReading' => 'DESC']);
+
+        $arBooks = array();
+        foreach ($rsBooks as $book) {
+            $arBooks[] = [
+                "ID" => $book->getId(),
+                "NAME" => $book->getName(),
+                "AUTHOR" => $book->getAuthor(),
+                "COVER" => ($book->getCover()) ? $coverDir . "/" . $book->getCover()->getFileName() : false,
+                "FILE" => ($book->getFile()) ? $fileDir . "/" . $book->getFile()->getFileName() : false,
+                "ALLOW_DOWNLOADING" => $book->getAllowDownloading()
+            ];
+        }
+
         return $this->render('library/index.html.twig', [
             'title' => "Библиотека книг",
-            'books' => [
-                [
-                    "ID" => 1,
-                    "NAME" => "One day",
-                    "AUTHOR" => "J.J. Abee",
-                    "COVER" => "/covers/jpg1.png",
-                    "URL" => "/download/book/book1.pdf",
-                    "ALLOW_DOWNLOADING" => false
-                ],
-                [
-                    "ID" => 2,
-                    "NAME" => "Two day",
-                    "AUTHOR" => "J.J. Abee",
-                    "COVER" => "/covers/jpg2.png",
-                    "URL" => "/download/book/book2.pdf",
-                    "ALLOW_DOWNLOADING" => true
-                ],
-            ]
+            'books' => $arBooks
         ]);
     }
 
