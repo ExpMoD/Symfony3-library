@@ -126,11 +126,11 @@ class CoverHandler
      * @param int $id
      * @return BinaryFileResponse|JsonResponse
      */
-    public function downloadPage(int $id)
+    public function downloadPageById(int $id)
     {
         try {
-            $file = $this->get($id);
-            if (!$file) {
+            $entity = $this->get($id);
+            if (!$entity) {
                 $array = array(
                     'status' => 0,
                     'message' => 'File does not exist'
@@ -138,9 +138,33 @@ class CoverHandler
                 $response = new JsonResponse($array, 200);
                 return $response;
             }
-            $displayName = $file->getActualName();
-            $fileName = $file->getFileName();
-            $fileWithPath = $this->container->getParameter('file_directory') . "/" . $fileName;
+            $displayName = $entity->getActualName();
+            $fileName = $entity->getFileName();
+            $fileWithPath = $this->container->getParameter('cover_directory') . "/" . $fileName;
+            $response = new BinaryFileResponse($fileWithPath);
+            $response->headers->set('Content-Type', 'text/plain');
+            $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $displayName);
+            return $response;
+        } catch (Exception $e) {
+            $array = array(
+                'status' => 0,
+                'message' => 'Download error'
+            );
+            $response = new JsonResponse($array, 400);
+            return $response;
+        }
+    }
+
+    /**
+     * @param Cover $id
+     * @return BinaryFileResponse|JsonResponse
+     */
+    public function downloadPageByEntity(Cover $entity)
+    {
+        try {
+            $displayName = $entity->getActualName();
+            $fileName = $entity->getFileName();
+            $fileWithPath = $this->container->getParameter('cover_directory') . "/" . $fileName;
             $response = new BinaryFileResponse($fileWithPath);
             $response->headers->set('Content-Type', 'text/plain');
             $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $displayName);

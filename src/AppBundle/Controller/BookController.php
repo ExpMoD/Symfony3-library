@@ -33,7 +33,7 @@ class BookController extends Controller
                 "NAME" => $book->getName(),
                 "AUTHOR" => $book->getAuthor(),
                 "COVER" => ($book->getCover()) ? $coverDir . "/" . $book->getCover()->getFileName() : false,
-                "FILE" => ($book->getFile()) ? $fileDir . "/" . $book->getFile()->getFileName() : false,
+                "FILE" => $this->generateUrl('downloadBook', ['bookId' => $book->getId()]),
                 "ALLOW_DOWNLOADING" => $book->getAllowDownloading()
             ];
         }
@@ -109,5 +109,23 @@ class BookController extends Controller
         var_dump($book->getCover()->getFileName());
 
         return new Response("");
+    }
+
+    /**
+     * @Route("/book/download/{bookId}", name="downloadBook")
+     */
+    public function downloadBookAction($bookId)
+    {
+        $fileController = new FileHandler($this->container, $this->getDoctrine());
+
+        $manager = $this->getDoctrine()->getManager();
+
+        $book = $manager->getRepository('AppBundle:Book')->find($bookId);
+
+        if ($book->getAllowDownloading()) {
+            return ($book->getFile()) ? $fileController->downloadPageByEntity($book->getFile()) : false;
+        } else {
+            return false;
+        }
     }
 }
