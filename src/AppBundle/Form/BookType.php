@@ -10,6 +10,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
 
@@ -24,7 +26,7 @@ class BookType extends AbstractType
                 'cover',
                 FileType::class,
                 array(
-                    'required' => true,
+                    'required' => !!$options['isEdit'],
                     'constraints' => [
                         new File([
                             'mimeTypes' => [
@@ -62,10 +64,15 @@ class BookType extends AbstractType
             ]);
     }
 
+    public function finishView(FormView $view, FormInterface $form, array $options)
+    {
+    }
+
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Book::class
+            'data_class' => Book::class,
+            'isEdit' => false
         ]);
     }
 

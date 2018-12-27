@@ -156,7 +156,7 @@ class CoverHandler
     }
 
     /**
-     * @param Cover $id
+     * @param Cover $entity
      * @return BinaryFileResponse|JsonResponse
      */
     public function downloadPageByEntity(Cover $entity)

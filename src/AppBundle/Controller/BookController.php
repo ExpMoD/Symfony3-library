@@ -90,7 +90,6 @@ class BookController extends Controller
 
             return $this->redirectToRoute('addBook');
         }
-
         return $this->render('library/forms/addBook.html.twig', [
             'form' => $form->createView()
         ]);
@@ -103,12 +102,15 @@ class BookController extends Controller
     {
         $manager = $this->getDoctrine()->getManager();
 
-        $book = $manager->getRepository('AppBundle:Book')->find($bookId);
+        $bookEntity = $manager->getRepository('AppBundle:Book')->find($bookId);
 
 
-        var_dump($book->getCover()->getFileName());
+        $form = $this->createForm(BookType::class, $bookEntity, ['isEdit' => true]);
 
-        return new Response("");
+
+        return $this->render('library/forms/addBook.html.twig', [
+            'form' => $form->createView()
+        ]);
     }
 
     /**
