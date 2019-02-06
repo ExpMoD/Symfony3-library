@@ -8,6 +8,7 @@ use AppBundle\Entity\File;
 use AppBundle\Form\BookType;
 use AppBundle\Service\FileHandler;
 use AppBundle\Service\CoverHandler;
+use Doctrine\Common\Persistence\ObjectManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -53,7 +54,14 @@ class BookController extends Controller
 
         $bookEntity = new Book();
 
-        $form = $this->createForm(BookType::class, $bookEntity);
+        $form = $this->createForm(
+            BookType::class,
+            $bookEntity,
+            [
+                'em' => $this->getDoctrine()->getManager(),
+                'container' => $this->container
+            ]
+        );
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -102,10 +110,30 @@ class BookController extends Controller
     {
         $manager = $this->getDoctrine()->getManager();
 
-        $bookEntity = $manager->getRepository('AppBundle:Book')->find($bookId);
+        $bookEntity = $manager->getRepository('AppBundle:Book')->findOneBy(['id' => $bookId]);
+
+        //$bookEntity = new Book();
+
+        //$bookEntity->setCover((new Cover()));
 
 
-        $form = $this->createForm(BookType::class, $bookEntity, ['isEdit' => true]);
+        $form = $this->createForm(
+            BookType::class,
+            $bookEntity,
+            [
+                'em' => $this->getDoctrine()->getManager(),
+                'container' => $this->container,
+                'isEdit' => true
+            ]
+        );
+
+        $data = $form->getData();
+        throw new \Exception(var_dump($data->getCover()));
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            //$this->getDoctrine()->getManager()->persist($bookEntity);
+            //$this->getDoctrine()->getManager()->flush();
+        }
 
 
         return $this->render('library/forms/addBook.html.twig', [

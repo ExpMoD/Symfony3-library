@@ -3,6 +3,8 @@
 namespace AppBundle\Form;
 
 use AppBundle\Entity\Book;
+use AppBundle\Form\DataTransformer\CoverToEntityTransformer;
+use AppBundle\Form\DataTransformer\FileToEntityTransformer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -19,41 +21,51 @@ class BookType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $coverTransformer = new CoverToEntityTransformer($options['em'], $options['container']);
+        $fileTransformer = new FileToEntityTransformer($options['em'], $options['container']);
+
         $builder
             ->add('name', TextType::class)
             ->add('author', TextType::class)
             ->add(
-                'cover',
-                FileType::class,
-                array(
-                    'required' => !!$options['isEdit'],
-                    'constraints' => [
-                        new File([
-                            'mimeTypes' => [
-                                'image/png',
-                                'image/jpg',
-                                'image/jpeg'
+                $builder
+                    ->create(
+                        'cover',
+                        'Symfony\Component\Form\Extension\Core\Type\FileType',
+                        array(
+                            'required' => !!$options['isEdit'],
+                            'constraints' => [
+                                new File([
+                                    'mimeTypes' => [
+                                        'image/png',
+                                        'image/jpg',
+                                        'image/jpeg'
+                                    ]
+                                ])
                             ]
-                        ])
-                    ]
-                )
+                        )
+                    )
+                    ->addModelTransformer($coverTransformer)
             )
             ->add(
-                'file',
-                FileType::class,
-                array(
-                    'required' => false,
-                    'constraints' => [
-                        new File([
-                            'maxSize' => '5M',
-                            'mimeTypes' => [
-                                'application/pdf',
-                                'application/x-pdf',
-                                'application/pdf'
+                $builder
+                    ->create(
+                        'file',
+                        'Symfony\Component\Form\Extension\Core\Type\FileType',
+                        array(
+                            'required' => false,
+                            'constraints' => [
+                                new File([
+                                    'maxSize' => '5M',
+                                    'mimeTypes' => [
+                                        'application/pdf',
+                                        'application/x-pdf'
+                                    ]
+                                ])
                             ]
-                        ])
-                    ]
-                )
+                        )
+                    )
+                    ->addModelTransformer($fileTransformer)
             )
             ->add('dateOfReading', DateTimeType::class)
             ->add('allowDownloading', CheckboxType::class, ['required' => false])
@@ -70,10 +82,15 @@ class BookType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([
-            'data_class' => Book::class,
-            'isEdit' => false
-        ]);
+        $resolver
+            ->setDefaults([
+                'data_class' => Book::class,
+                'isEdit' => false
+            ])
+            ->setRequired(['em', 'container'])
+            ->setAllowedTypes('em', 'Doctrine\Common\Persistence\ObjectManager')
+            ->setAllowedTypes('container', 'Symfony\Component\DependencyInjection\ContainerInterface')
+        ;
     }
 
     public function getBlockPrefix()
