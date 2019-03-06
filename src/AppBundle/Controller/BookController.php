@@ -3,17 +3,13 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Book;
-use AppBundle\Entity\Cover;
-use AppBundle\Entity\File;
 use AppBundle\Form\BookType;
-use AppBundle\Service\FileHandler;
 use AppBundle\Service\CoverHandler;
-use Doctrine\Common\Persistence\ObjectManager;
+use AppBundle\Service\FileHandler;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 class BookController extends Controller
 {
@@ -27,7 +23,7 @@ class BookController extends Controller
 
         $rsBooks = $this->getDoctrine()->getRepository('AppBundle:Book')->findBy([], ['dateOfReading' => 'DESC']);
 
-        $arBooks = array();
+        $arBooks = [];
         foreach ($rsBooks as $book) {
             $arBooks[] = [
                 "ID" => $book->getId(),
@@ -35,13 +31,13 @@ class BookController extends Controller
                 "AUTHOR" => $book->getAuthor(),
                 "COVER" => ($book->getCover()) ? $coverDir . "/" . $book->getCover()->getFileName() : false,
                 "FILE" => $this->generateUrl('downloadBook', ['bookId' => $book->getId()]),
-                "ALLOW_DOWNLOADING" => $book->getAllowDownloading()
+                "ALLOW_DOWNLOADING" => $book->getAllowDownloading(),
             ];
         }
 
         return $this->render('library/index.html.twig', [
             'title' => "Библиотека книг",
-            'books' => $arBooks
+            'books' => $arBooks,
         ]);
     }
 
@@ -59,7 +55,7 @@ class BookController extends Controller
             $bookEntity,
             [
                 'em' => $this->getDoctrine()->getManager(),
-                'container' => $this->container
+                'container' => $this->container,
             ]
         );
 
@@ -99,7 +95,7 @@ class BookController extends Controller
             return $this->redirectToRoute('addBook');
         }
         return $this->render('library/forms/addBook.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),
         ]);
     }
 
@@ -123,7 +119,7 @@ class BookController extends Controller
             [
                 'em' => $this->getDoctrine()->getManager(),
                 'container' => $this->container,
-                'isEdit' => true
+                'isEdit' => true,
             ]
         );
 
@@ -137,7 +133,7 @@ class BookController extends Controller
 
 
         return $this->render('library/forms/addBook.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),
         ]);
     }
 

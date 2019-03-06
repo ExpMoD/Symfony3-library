@@ -8,7 +8,6 @@
 
 namespace AppBundle\DataFixture\ORM;
 
-use AppBundle\Entity\User;
 use Doctrine\Bundle\FixturesBundle\ORMFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
@@ -34,7 +33,7 @@ class LoadUserData implements ORMFixtureInterface, ContainerAwareInterface
         $user->setPlainPassword('1234');
         $user->setPassword('1234');
         $user->setEnabled(true);
-        $user->setRoles(array('ROLE_ADMIN'));
+        $user->setRoles(['ROLE_ADMIN']);
         $user->setName('Андрей');
 
         // Update the user

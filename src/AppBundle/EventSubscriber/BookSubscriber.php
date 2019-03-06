@@ -9,9 +9,9 @@ class BookSubscriber implements EventSubscriber
 {
     public function getSubscribedEvents()
     {
-        return array(
+        return [
             'bookDelete',
-        );
+        ];
     }
 
     public function bookDelete(LifecycleEventArgs $args)

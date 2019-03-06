@@ -9,11 +9,9 @@
 namespace AppBundle\Form\DataTransformer;
 
 use AppBundle\Entity\Cover;
-use AppBundle\Entity\File;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\DataTransformerInterface;
-use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class CoverToEntityTransformer implements DataTransformerInterface
