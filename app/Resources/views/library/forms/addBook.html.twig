@@ -3,5 +3,51 @@
 
 {% block body %}
     {{ form_start(form) }}
+
+    {{ form_label(form.name) }}
+    <br>
+    {{ form_widget(form.name) }}
+
+    <br>
+    <br>
+
+    {{ form_label(form.author) }}
+    <br>
+    {{ form_widget(form.author) }}
+
+    <br>
+    <br>
+
+    {{ form_label(form.cover) }}
+    <br>
+    {{ form_widget(form.cover) }}
+
+    <br>
+    <br>
+
+    {{ form_label(form.file) }}
+    <br>
+    {{ form_widget(form.file) }}
+
+    <br>
+    <br>
+
+    {{ form_label(form.dateOfReading) }}
+    <br>
+    {{ form_widget(form.dateOfReading) }}
+
+    <br>
+
+    {{ form_label(form.allowDownloading) }}
+    {{ form_widget(form.allowDownloading) }}
+
+    <br>
+    <br>
+
+    {{ form_row(form.submit, {'label': 'Добавить'}) }}
+
+    <br>
+    <br>
+
     {{ form_end(form) }}
 {% endblock %}
