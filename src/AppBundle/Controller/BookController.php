@@ -2,10 +2,10 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\Book;
 use AppBundle\Form\BookType;
 use AppBundle\Service\CoverHandler;
 use AppBundle\Service\FileHandler;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -43,16 +43,15 @@ class BookController extends Controller
 
     /**
      * @Route("/book/add", name="addBook")
+     * @IsGranted("ROLE_USER")
      */
-    public function addBookAction(Request $request)
+    public function addBookAction(Request $request, FileHandler $fileHandler)
     {
         $paramsArray = [];
 
-        $bookEntity = new Book();
-
         $form = $this->createForm(
             BookType::class,
-            $bookEntity,
+            null,
             [
                 'em' => $this->getDoctrine()->getManager(),
                 'container' => $this->container,
@@ -61,6 +60,8 @@ class BookController extends Controller
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $bookEntity = $form->getData();
+
             $fileController = new FileHandler($this->container, $this->getDoctrine());
             $coverController = new CoverHandler($this->container, $this->getDoctrine());
 

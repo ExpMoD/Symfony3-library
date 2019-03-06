@@ -18,6 +18,12 @@ services:
         # if you need to do this, you can override this setting on individual services
         public: false
 
+
+    # Обработчик файлов
+    AppBubdle\Service\FileHandler:
+    # Обработчик обложек книг
+    AppBubdle\Service\CoverHandler:
+
     # makes classes in src/AppBundle available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
     AppBundle\:

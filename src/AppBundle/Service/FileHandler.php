@@ -3,16 +3,16 @@
 namespace AppBundle\Service;
 
 use AppBundle\Entity\File;
-use http\Exception;
-use Doctrine\ORM\ORMException;
-use Doctrine\ORM\EntityManager;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\Common\Persistence\ObjectRepository;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\ORMException;
+use http\Exception;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class FileHandler
 {
@@ -131,10 +131,10 @@ class FileHandler
         try {
             $entity = $this->get($id);
             if (!$entity) {
-                $array = array(
+                $array = [
                     'status' => 0,
-                    'message' => 'File does not exist'
-                );
+                    'message' => 'File does not exist',
+                ];
                 $response = new JsonResponse($array, 200);
                 return $response;
             }
@@ -146,10 +146,10 @@ class FileHandler
             $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $displayName);
             return $response;
         } catch (Exception $e) {
-            $array = array(
+            $array = [
                 'status' => 0,
-                'message' => 'Download error'
-            );
+                'message' => 'Download error',
+            ];
             $response = new JsonResponse($array, 400);
             return $response;
         }
@@ -170,10 +170,10 @@ class FileHandler
             $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $displayName);
             return $response;
         } catch (Exception $e) {
-            $array = array(
+            $array = [
                 'status' => 0,
-                'message' => 'Download error'
-            );
+                'message' => 'Download error',
+            ];
             $response = new JsonResponse($array, 400);
             return $response;
         }
