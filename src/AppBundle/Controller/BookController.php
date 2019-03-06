@@ -45,7 +45,7 @@ class BookController extends Controller
      * @Route("/book/add", name="addBook")
      * @IsGranted("ROLE_USER")
      */
-    public function addBookAction(Request $request, FileHandler $fileHandler)
+    public function addBookAction(Request $request, FileHandler $fileHandler, CoverHandler $coverHandler)
     {
         $paramsArray = [];
 
