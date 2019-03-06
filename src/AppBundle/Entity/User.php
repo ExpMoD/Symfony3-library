@@ -11,125 +11,46 @@
 
 namespace AppBundle\Entity;
 
+use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
  * @ORM\Table(name="users", schema="library")
  */
-class User implements UserInterface, \Serializable
+class User extends BaseUser
 {
     /**
      * @var int
      *
      * @ORM\Id
-     * @ORM\GeneratedValue
+     * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(type="integer")
      */
-    private $id;
+    protected $id;
 
 
     /**
      * @var string
      *
-     * @ORM\Column(type="string", unique=false)
+     * @ORM\Column(type="string", unique=false, nullable=true)
      */
-    private $username;
+    private $name;
 
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string")
-     */
-    private $password;
-
-    /**
-     * @var array
-     *
-     * @ORM\Column(type="json_array", nullable=true)
-     */
-    private $roles = [];
-
-    public function getId(): int
+    public function __construct()
     {
-        return $this->id;
+        parent::__construct();
+        // your own logic
     }
 
-    public function getUsername(): string
+    public function getName(): string
     {
-        return $this->username;
+        return $this->name;
     }
 
-    public function setUsername(string $username): void
+    public function setName(string $name): void
     {
-        $this->username = $username;
-    }
-
-    public function getPassword(): string
-    {
-        return $this->password;
-    }
-
-    public function setPassword(string $password): void
-    {
-        $this->password = $password;
-    }
-
-    /**
-     * @return array (Role|string)[] The user roles
-     */
-    public function getRoles(): array
-    {
-        $roles = $this->roles;
-
-        if (!in_array('ROLE_USER', $roles)) {
-            $roles[] = 'ROLE_USER';
-        }
-
-        return array_unique($roles);
-    }
-
-    public function setRoles(array $roles): void
-    {
-        $this->roles = $roles;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function serialize(): string
-    {
-        return serialize([$this->id, $this->username, $this->password]);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function unserialize($serialized): void
-    {
-        [$this->id, $this->username, $this->password] = unserialize($serialized, ['allowed_classes' => false]);
-    }
-
-
-
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getSalt()
-    {
-        return null;
-    }
-
-
-
-    /**
-     * {@inheritdoc}
-     */
-    public function eraseCredentials()
-    {
-        return null;
+        $this->name = $name;
     }
 }

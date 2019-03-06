@@ -25,10 +25,10 @@
         {% block header %}
             {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                 <a class="header-subblock button" href="{{ path('addBook') }}">Добавить книгу</a>
-                <!--<div class="header-subblock"><b style="padding-right: 5px;">Пользователь:</b>  {{ app.user.username }}</div>-->
-                <a class="header-subblock button" href="{{ logout_path() }}">Выйти</a>
+                <div class="header-subblock"><b style="padding-right: 5px;">Пользователь:</b>  {{ app.user.username }}</div>
+                <a class="header-subblock button" href="{{ path('fos_user_security_logout') }}">Выйти</a>
             {% else %}
-                <a class="header-subblock button" href="{{ path('login') }}">Войти</a>
+                <a class="header-subblock button" href="{{ path('fos_user_security_login') }}">Войти</a>
             {% endif %}
         {% endblock %}
     </div>

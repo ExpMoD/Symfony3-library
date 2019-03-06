@@ -25,14 +25,20 @@ class LoadUserData implements ORMFixtureInterface, ContainerAwareInterface
      */
     public function load(ObjectManager $manager)
     {
-        $user = new User();
-        $user->setUsername('admin');
-        $encoder = $this->container->get('security.password_encoder');
-        $password = $encoder->encodePassword($user, '0000');
-        $user->setPassword($password);
+        $userManager = $this->container->get('fos_user.user_manager');
 
-        $manager->persist($user);
-        $manager->flush();
+        // Create our user and set details
+        $user = $userManager->createUser();
+        $user->setUsername('admin');
+        $user->setEmail('admin@email.com');
+        $user->setPlainPassword('1234');
+        $user->setPassword('1234');
+        $user->setEnabled(true);
+        $user->setRoles(array('ROLE_ADMIN'));
+        $user->setName('Андрей');
+
+        // Update the user
+        $userManager->updateUser($user, true);
     }
 
     public function setContainer(ContainerInterface $container = null)
