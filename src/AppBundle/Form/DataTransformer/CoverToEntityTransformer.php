@@ -9,7 +9,7 @@
 namespace AppBundle\Form\DataTransformer;
 
 use AppBundle\Entity\Cover;
-use Doctrine\Common\Persistence\ObjectManager;
+use AppBundle\Service\CoverHandler;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -17,66 +17,46 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class CoverToEntityTransformer implements DataTransformerInterface
 {
     /**
-     * @var ObjectManager
+     * @var CoverHandler
      */
-    private $om;
+    private $coverHandler;
     /**
      * @var ContainerInterface
      */
     private $container;
 
     /**
-     * @param ObjectManager $om
      * @param ContainerInterface $container
+     * @param CoverHandler $coverHandler
      */
-    public function __construct(ObjectManager $om, ContainerInterface $container)
+    public function __construct(ContainerInterface $container, CoverHandler $coverHandler)
     {
-        $this->om = $om;
         $this->container = $container;
+        $this->coverHandler = $coverHandler;
     }
 
     /**
      * @param  Cover|string|null $cover
-     * @return UploadedFile
+     * @return Cover
      */
     public function transform($cover)
     {
-        $uploadFile = false;
-        if ($cover instanceof Cover) {
-            if ($cover->getFileName()) {
-                $filePath = $this->container->getParameter('cover_directory') . "/" . $cover->getFileName();
-                $uploadFile = new UploadedFile($filePath, $cover->getActualName());
-            }
-        } else {
-            return null;
-        }
-
-        return $uploadFile;
+        return $cover;
     }
 
     /**
-     * @param  UploadedFile|null $uploadFile
+     * @param  Cover|null $uploadedCover
      * @return Cover|null
      */
-    public function reverseTransform($uploadFile)
+    public function reverseTransform($uploadedCover)
     {
-        if (is_null($uploadFile)) {
-            return null;
+        $oUploadedFile = $uploadedCover->getPath();
+        if ($oUploadedFile instanceof UploadedFile) {
+            $uploadedCover = $this->coverHandler->upload($oUploadedFile);
+        } else {
+            $uploadedCover = $this->coverHandler->get($uploadedCover->getId());
         }
 
-        $entity = null;
-        $entity = $this->om->getRepository('AppBundle:Cover')->findOneBy(['fileName' => $uploadFile->getBasename()]);
-
-        if (!$entity) {
-            $fileName = md5(uniqid()) . '.' . $uploadFile->guessExtension();
-            $originalName = $uploadFile->getClientOriginalName();
-            $uploadFile->move($this->container->getParameter('cover_directory'), $fileName);
-            $entity = new Cover();
-            $entity->setFileName($fileName);
-            $entity->setActualName($originalName);
-            $this->om->persist($entity);
-        }
-
-        return $entity;
+        return $uploadedCover;
     }
 }

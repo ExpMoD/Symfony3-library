@@ -31,11 +31,6 @@ class FileHandler
      */
     protected $entityManager;
 
-    /**
-     * @var ObjectRepository
-     */
-    protected $objectRepository;
-
 
     /**
      * FileHandler constructor.
@@ -55,20 +50,26 @@ class FileHandler
      */
     public function upload(UploadedFile $file)
     {
-        try {
-            $fileName = md5(uniqid()) . '.' . $file->guessExtension();
-            $originalName = $file->getClientOriginalName();
-            $file->move($this->container->getParameter('file_directory'), $fileName);
-            $entity = new File();
-            $entity->setFileName($fileName);
-            $entity->setActualName($originalName);
+        $sFileDir = $this->container->getParameter('file_directory');
+        $sRandomDir = substr(str_replace(['+', '/', '='], '', base64_encode(random_bytes(10))), 0, 10);
 
-            $this->entityManager->persist($entity);
-            $this->entityManager->flush();
-            return $entity;
+        try {
+            $sFileName = md5(uniqid()) . '.' . $file->guessExtension();
+            $sOriginalName = $file->getClientOriginalName();
+
+            $arFile = $file->move($sFileDir . $sRandomDir, $sFileName);
+
+            if (!empty($arFile)) {
+                $fileEntity = new File();
+                $fileEntity->setPath($sRandomDir . '/' . $sFileName);
+                $fileEntity->setActualName($sOriginalName);
+
+                return $fileEntity;
+            }
         } catch (ORMException $e) {
-            return false;
         }
+
+        return false;
     }
 
     /**

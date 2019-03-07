@@ -8,9 +8,8 @@
 
 namespace AppBundle\Form\DataTransformer;
 
-use AppBundle\Entity\Cover;
 use AppBundle\Entity\File;
-use Doctrine\Common\Persistence\ObjectManager;
+use AppBundle\Service\FileHandler;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -18,66 +17,46 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class FileToEntityTransformer implements DataTransformerInterface
 {
     /**
-     * @var ObjectManager
+     * @var FileHandler
      */
-    private $om;
+    private $fileHandler;
     /**
      * @var ContainerInterface
      */
     private $container;
 
     /**
-     * @param ObjectManager $om
      * @param ContainerInterface $container
+     * @param FileHandler $fileHandler
      */
-    public function __construct(ObjectManager $om, ContainerInterface $container)
+    public function __construct(ContainerInterface $container, FileHandler $fileHandler)
     {
-        $this->om = $om;
         $this->container = $container;
+        $this->fileHandler = $fileHandler;
     }
 
     /**
-     * @param  File|null $cover
-     * @return UploadedFile
+     * @param  File|string|null $file
+     * @return File
      */
-    public function transform($cover)
+    public function transform($file)
     {
-        $uploadFile = false;
-        if ($cover instanceof File) {
-            if ($cover->getFileName()) {
-                $filePath = $this->container->getParameter('file_directory') . "/" . $cover->getFileName();
-                $uploadFile = new UploadedFile($filePath, $cover->getActualName());
-            }
-        } else {
-            return null;
-        }
-
-        return $uploadFile;
+        return $file;
     }
 
     /**
-     * @param  UploadedFile|null $uploadFile
+     * @param  File|null $uploadedFile
      * @return File|null
      */
-    public function reverseTransform($uploadFile)
+    public function reverseTransform($uploadedFile)
     {
-        if (is_null($uploadFile)) {
-            return null;
+        $oUploadedFile = $uploadedFile->getPath();
+        if ($oUploadedFile instanceof UploadedFile) {
+            $uploadedFile = $this->fileHandler->upload($oUploadedFile);
+        } else {
+            $uploadedFile = $this->fileHandler->get($uploadedFile->getId());
         }
 
-        $entity = null;
-        $entity = $this->om->getRepository('AppBundle:File')->findOneBy(['fileName' => $uploadFile->getBasename()]);
-
-        if (!$entity) {
-            $fileName = md5(uniqid()) . '.' . $uploadFile->guessExtension();
-            $originalName = $uploadFile->getClientOriginalName();
-            $uploadFile->move($this->container->getParameter('file_directory'), $fileName);
-            $entity = new Cover();
-            $entity->setFileName($fileName);
-            $entity->setActualName($originalName);
-            //$this->om->persist($entity);
-        }
-
-        return $entity;
+        return $uploadedFile;
     }
 }

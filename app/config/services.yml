@@ -2,9 +2,9 @@
 # https://symfony.com/doc/current/service_container.html
 parameters:
     #parameter_name: value
-    file_path: '/uploads/files'
+    file_path: '/uploads/files/'
     file_directory: '%kernel.root_dir%/../web%file_path%'
-    cover_path: '/uploads/covers'
+    cover_path: '/uploads/covers/'
     cover_directory: '%kernel.root_dir%/../web%cover_path%'
 
 services:
@@ -23,6 +23,10 @@ services:
     AppBubdle\Service\FileHandler:
     # Обработчик обложек книг
     AppBubdle\Service\CoverHandler:
+
+
+    AppBundle\Form\DataTransformer\CoverToEntityTransformer:
+    AppBundle\Form\DataTransformer\FileToEntityTransformer:
 
     # makes classes in src/AppBundle available to be used as services
     # this creates a service per class whose id is the fully-qualified class name

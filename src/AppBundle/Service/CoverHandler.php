@@ -3,16 +3,15 @@
 namespace AppBundle\Service;
 
 use AppBundle\Entity\Cover;
-use http\Exception;
-use Doctrine\ORM\ORMException;
-use Doctrine\ORM\EntityManager;
 use Doctrine\Common\Persistence\ManagerRegistry;
-use Doctrine\Common\Persistence\ObjectRepository;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\ORMException;
+use http\Exception;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class CoverHandler
 {
@@ -31,14 +30,9 @@ class CoverHandler
      */
     protected $entityManager;
 
-    /**
-     * @var ObjectRepository
-     */
-    protected $objectRepository;
-
 
     /**
-     * FileHandler constructor.
+     * CoverHandler constructor.
      * @param ContainerInterface $container
      * @param ManagerRegistry $managerRegistry
      */
@@ -55,20 +49,26 @@ class CoverHandler
      */
     public function upload(UploadedFile $file)
     {
-        try {
-            $fileName = md5(uniqid()) . '.' . $file->guessExtension();
-            $originalName = $file->getClientOriginalName();
-            $file->move($this->container->getParameter('cover_directory'), $fileName);
-            $entity = new Cover();
-            $entity->setFileName($fileName);
-            $entity->setActualName($originalName);
+        $sCoverDir = $this->container->getParameter('cover_directory');
+        $sRandomDir = substr(str_replace(['+', '/', '='], '', base64_encode(random_bytes(10))), 0, 10);
 
-            $this->entityManager->persist($entity);
-            $this->entityManager->flush();
-            return $entity;
+        try {
+            $sFileName = md5(uniqid()) . '.' . $file->guessExtension();
+            $sOriginalName = $file->getClientOriginalName();
+
+            $arFile = $file->move($sCoverDir . $sRandomDir, $sFileName);
+
+            if (!empty($arFile)) {
+                $coverEntity = new Cover();
+                $coverEntity->setPath($sRandomDir . '/' . $sFileName);
+                $coverEntity->setActualName($sOriginalName);
+
+                return $coverEntity;
+            }
         } catch (ORMException $e) {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -77,7 +77,7 @@ class CoverHandler
      */
     public function get(int $id)
     {
-        $fileEntity = $this->managerRegistry->getRepository('Cover.php')->find($id);
+        $fileEntity = $this->managerRegistry->getRepository('AppBundle:Cover')->find($id);
 
         return $fileEntity;
     }
@@ -99,8 +99,9 @@ class CoverHandler
                 return false;
             }
         } catch (ORMException $e) {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -118,8 +119,9 @@ class CoverHandler
                 return false;
             }
         } catch (ORMException $e) {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -131,25 +133,25 @@ class CoverHandler
         try {
             $entity = $this->get($id);
             if (!$entity) {
-                $array = array(
+                $array = [
                     'status' => 0,
-                    'message' => 'File does not exist'
-                );
+                    'message' => 'File does not exist',
+                ];
                 $response = new JsonResponse($array, 200);
                 return $response;
             }
             $displayName = $entity->getActualName();
-            $fileName = $entity->getFileName();
+            $fileName = $entity->getPath();
             $fileWithPath = $this->container->getParameter('cover_directory') . "/" . $fileName;
             $response = new BinaryFileResponse($fileWithPath);
             $response->headers->set('Content-Type', 'text/plain');
             $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $displayName);
             return $response;
         } catch (Exception $e) {
-            $array = array(
+            $array = [
                 'status' => 0,
-                'message' => 'Download error'
-            );
+                'message' => 'Download error',
+            ];
             $response = new JsonResponse($array, 400);
             return $response;
         }
@@ -163,17 +165,17 @@ class CoverHandler
     {
         try {
             $displayName = $entity->getActualName();
-            $fileName = $entity->getFileName();
+            $fileName = $entity->getPath();
             $fileWithPath = $this->container->getParameter('cover_directory') . "/" . $fileName;
             $response = new BinaryFileResponse($fileWithPath);
             $response->headers->set('Content-Type', 'text/plain');
             $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $displayName);
             return $response;
         } catch (Exception $e) {
-            $array = array(
+            $array = [
                 'status' => 0,
-                'message' => 'Download error'
-            );
+                'message' => 'Download error',
+            ];
             $response = new JsonResponse($array, 400);
             return $response;
         }

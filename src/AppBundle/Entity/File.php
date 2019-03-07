@@ -24,9 +24,9 @@ class File
     /**
      * @var string
      *
-     * @ORM\Column(name="FileName", type="string", length=255)
+     * @ORM\Column(name="Path", type="string", length=255)
      */
-    private $fileName;
+    private $path;
 
     /**
      * @var string
@@ -59,27 +59,27 @@ class File
     }
 
     /**
-     * Set fileName.
+     * Set path.
      *
-     * @param string $fileName
+     * @param string $path
      *
      * @return File
      */
-    public function setFileName($fileName)
+    public function setPath($path)
     {
-        $this->fileName = $fileName;
+        $this->path = $path;
 
         return $this;
     }
 
     /**
-     * Get fileName.
+     * Get path.
      *
      * @return string
      */
-    public function getFileName()
+    public function getPath()
     {
-        return $this->fileName;
+        return $this->path;
     }
 
     /**

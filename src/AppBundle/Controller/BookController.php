@@ -2,6 +2,8 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Book;
+use AppBundle\Entity\Cover;
 use AppBundle\Form\BookType;
 use AppBundle\Service\CoverHandler;
 use AppBundle\Service\FileHandler;
@@ -10,6 +12,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Validator\Constraints\Valid;
 
 class BookController extends Controller
 {
@@ -47,53 +50,40 @@ class BookController extends Controller
      */
     public function addBookAction(Request $request, FileHandler $fileHandler, CoverHandler $coverHandler)
     {
-        $paramsArray = [];
+        $bookEntity = new Book();
 
         $form = $this->createForm(
             BookType::class,
-            null,
-            [
-                'em' => $this->getDoctrine()->getManager(),
-                'container' => $this->container,
-            ]
+            $bookEntity
         );
+
+
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $bookEntity = $form->getData();
+            var_dump($bookEntity);
+            //$uploadedCover = $request->files->get('app_bundle_book')['cover'];
+            //$uploadedFile = $request->files->get('app_bundle_book')['file'];
 
-            $fileController = new FileHandler($this->container, $this->getDoctrine());
-            $coverController = new CoverHandler($this->container, $this->getDoctrine());
+            $uploadedCover = $bookEntity->getCover();
+            $uploadedFile = $bookEntity->getFile();
 
-            $uploadedCover = $request->files->get('app_bundle_book')['cover'];
-            $uploadedFile = $request->files->get('app_bundle_book')['file'];
-
-            $uploadedCover = $uploadedCover ? $uploadedCover : false;
-
-            $uploadedFile = $uploadedFile ? $uploadedFile : false;
-
-            $coverEntity = false;
-            if ($uploadedCover && get_class($uploadedCover) == UploadedFile::class) {
-                $coverEntity = $coverController->upload($uploadedCover);
+            /*if ($uploadedCover && get_class($uploadedCover) == UploadedFile::class) {
+                if ($coverEntity = $coverHandler->upload($uploadedCover)) {
+                    $bookEntity->setCover($coverEntity);
+                }
             }
 
-            $fileEntity = false;
             if ($uploadedFile && get_class($uploadedFile) == UploadedFile::class) {
-                $fileEntity = $fileController->upload($uploadedFile);
-            }
-
-            if (!!$coverEntity) {
-                $bookEntity->setCover($coverEntity);
-            }
-
-            if (!!$fileEntity) {
-                $bookEntity->setFile($fileEntity);
+                if ($fileEntity = $fileHandler->upload($uploadedFile)) {
+                    $bookEntity->setFile($fileEntity);
+                }
             }
 
             $this->getDoctrine()->getManager()->persist($bookEntity);
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('addBook');
+            return $this->redirectToRoute('addBook');*/
         }
         return $this->render('library/forms/addBook.html.twig', [
             'form' => $form->createView(),

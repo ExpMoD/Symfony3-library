@@ -74,6 +74,9 @@ class Book
     public function __construct()
     {
         $this->dateOfReading = new \DateTime();
+        $this->cover = new Cover();
+        $this->file = new File();
+        //$this->cover->setPath('/0xZsaJCQmP/f10e2875879b1bbb556b8139d84e92c0.jpeg');
     }
 
     /**

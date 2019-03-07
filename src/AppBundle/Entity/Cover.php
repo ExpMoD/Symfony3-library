@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * File
@@ -24,13 +25,18 @@ class Cover
     /**
      * @var string
      *
-     * @ORM\Column(name="FileName", type="string", length=255)
+     * @Assert\NotBlank()
+     * @ORM\Column(name="Path", type="string", length=255)
+     * @Assert\Image(
+     *     mimeTypes={"image/png", "image/jpeg"}
+     * )
      */
-    private $fileName;
+    private $path;
 
     /**
      * @var string
      *
+     * @Assert\NotBlank()
      * @ORM\Column(name="ActualName", type="string", length=255)
      */
     private $actualName;
@@ -38,6 +44,7 @@ class Cover
     /**
      * @var \DateTime
      *
+     * @Assert\NotBlank()
      * @ORM\Column(name="CreationTime", type="datetime")
      */
     private $creationTime;
@@ -59,27 +66,27 @@ class Cover
     }
 
     /**
-     * Set fileName.
+     * Set path.
      *
-     * @param string $fileName
+     * @param string $path
      *
      * @return Cover
      */
-    public function setFileName($fileName)
+    public function setPath($path)
     {
-        $this->fileName = $fileName;
+        $this->path = $path;
 
         return $this;
     }
 
     /**
-     * Get fileName.
+     * Get path.
      *
      * @return string
      */
-    public function getFileName()
+    public function getPath()
     {
-        return $this->fileName;
+        return $this->path;
     }
 
     /**
@@ -128,5 +135,10 @@ class Cover
     public function getCreationTime()
     {
         return $this->creationTime;
+    }
+
+    public function isValid()
+    {
+        return (!empty($this->path) && !empty($this->actualName) && !empty($this->creationTime));
     }
 }
