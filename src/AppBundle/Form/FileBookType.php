@@ -2,7 +2,6 @@
 
 namespace AppBundle\Form;
 
-use AppBundle\Entity\Cover;
 use AppBundle\Form\DataTransformer\FileToEntityTransformer;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\AbstractType;
@@ -37,18 +36,9 @@ class FileBookType extends AbstractType
     {
         $builder
             ->add('id', HiddenType::class)
-            ->add('path', FileType::class, [
-                'required' => true,
-                'constraints' => [
-                    new File([
-                        'mimeTypes' => [
-                            'image/png',
-                            'image/jpg',
-                            'image/jpeg',
-                        ],
-                    ]),
-                ],
-                'label' => 'Обложка',
+            ->add('file', FileType::class, [
+                'required' => false,
+                'label' => 'Файл',
             ])
             ->addModelTransformer($this->transformer);
     }

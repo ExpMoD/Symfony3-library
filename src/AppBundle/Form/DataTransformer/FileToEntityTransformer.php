@@ -50,10 +50,10 @@ class FileToEntityTransformer implements DataTransformerInterface
      */
     public function reverseTransform($uploadedFile)
     {
-        $oUploadedFile = $uploadedFile->getPath();
+        $oUploadedFile = $uploadedFile->getFile();
         if ($oUploadedFile instanceof UploadedFile) {
             $uploadedFile = $this->fileHandler->upload($oUploadedFile);
-        } else {
+        } elseif ($iFileId = $uploadedFile->getId()) {
             $uploadedFile = $this->fileHandler->get($uploadedFile->getId());
         }
 

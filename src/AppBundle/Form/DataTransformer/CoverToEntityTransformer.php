@@ -50,11 +50,11 @@ class CoverToEntityTransformer implements DataTransformerInterface
      */
     public function reverseTransform($uploadedCover)
     {
-        $oUploadedFile = $uploadedCover->getPath();
+        $oUploadedFile = $uploadedCover->getFile();
         if ($oUploadedFile instanceof UploadedFile) {
             $uploadedCover = $this->coverHandler->upload($oUploadedFile);
-        } else {
-            $uploadedCover = $this->coverHandler->get($uploadedCover->getId());
+        } elseif ($iCoverId = $uploadedCover->getId()) {
+            $uploadedCover = $this->coverHandler->get($iCoverId);
         }
 
         return $uploadedCover;

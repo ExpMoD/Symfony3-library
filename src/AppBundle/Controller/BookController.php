@@ -58,15 +58,16 @@ class BookController extends Controller
         );
 
 
-
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            var_dump($bookEntity);
             //$uploadedCover = $request->files->get('app_bundle_book')['cover'];
             //$uploadedFile = $request->files->get('app_bundle_book')['file'];
 
             $uploadedCover = $bookEntity->getCover();
             $uploadedFile = $bookEntity->getFile();
+
+
+            var_dump($uploadedCover);
 
             /*if ($uploadedCover && get_class($uploadedCover) == UploadedFile::class) {
                 if ($coverEntity = $coverHandler->upload($uploadedCover)) {

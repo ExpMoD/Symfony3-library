@@ -20,13 +20,13 @@
 
     {{ form_widget(form.cover.id) }}
 
-    {{ form_label(form.cover.path) }}
+    {{ form_label(form.cover.file) }}
     <br>
-    {{ form_widget(form.cover.path) }}
+    {{ form_widget(form.cover.file) }}
     <br>
 
-    {% if form.cover.path.vars.value %}
-        <img src="{{cover_path ~ form.cover.path.vars.value }}" alt="">
+    {% if form.cover.file.vars.value %}
+        <img src="{{cover_path ~ form.cover.file.vars.value }}" alt="">
     {% endif %}
 
     <br>
@@ -34,9 +34,9 @@
 
     {{ form_widget(form.cover.id) }}
 
-    {{ form_label(form.file.path) }}
+    {{ form_label(form.file.file) }}
     <br>
-    {{ form_widget(form.file.path) }}
+    {{ form_widget(form.file.file) }}
     <br>
 
     <br>
@@ -58,6 +58,8 @@
 
     <br>
     <br>
+
+    {{ form_errors(form) }}
 
     {{ form_end(form) }}
 {% endblock %}

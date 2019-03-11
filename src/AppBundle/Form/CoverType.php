@@ -37,18 +37,7 @@ class CoverType extends AbstractType
     {
         $builder
             ->add('id', HiddenType::class)
-            ->add('path', FileType::class, [
-                //'mapped' => false,
-                'required' => true,
-                'constraints' => [
-                    new File([
-                        'mimeTypes' => [
-                            'image/png',
-                            'image/jpg',
-                            'image/jpeg',
-                        ],
-                    ]),
-                ],
+            ->add('file', FileType::class, [
                 'label' => 'Обложка',
             ])
             ->addModelTransformer($this->transformer);
