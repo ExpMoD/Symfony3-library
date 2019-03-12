@@ -38,7 +38,6 @@ class BookType extends AbstractType
          */
         $bookEntity = $builder->getData();
 
-
         $builder
             ->add('name', TextType::class, ['label' => 'Название'])
             ->add('author', TextType::class, ['label' => 'Автор'])
@@ -79,17 +78,29 @@ class BookType extends AbstractType
             ]);
 
 
-        if (!empty($bookEntity)) {
+        if (!empty($bookEntity) && $options['isEdit']) {
             if ($bookEntity->getCover() instanceof Cover) {
-                $builder->add('cover', CoverBookType::class, [
-                    'label' => false,
-                ]);
+                $builder->add(
+                    'delete_cover',
+                    CheckboxType::class,
+                    [
+                        'label' => 'Удалить обложку',
+                        'mapped' => false,
+                        'required' => false,
+                    ]
+                );
             }
 
             if ($bookEntity->getFile() instanceof File) {
-                $builder->add('file', FileBookType::class, [
-                    'label' => false,
-                ]);
+                $builder->add(
+                    'delete_file',
+                    CheckboxType::class,
+                    [
+                        'label' => 'Удалить файл',
+                        'mapped' => false,
+                        'required' => false,
+                    ]
+                );
             }
         }
     }

@@ -9,6 +9,7 @@ use AppBundle\Service\FileHandler;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 
 class BookController extends Controller
@@ -47,6 +48,7 @@ class BookController extends Controller
      */
     public function addBookAction(Request $request, FileHandler $fileHandler, CoverHandler $coverHandler)
     {
+        $manager = $this->getDoctrine()->getManager();
         $bookEntity = new Book();
 
         $form = $this->createForm(
@@ -64,8 +66,8 @@ class BookController extends Controller
                 $bookEntity->setFile($fileEntity);
             }
 
-            $this->getDoctrine()->getManager()->persist($bookEntity);
-            $this->getDoctrine()->getManager()->flush();
+            $manager->persist($bookEntity);
+            $manager->flush();
 
             return $this->redirectToRoute('addBook');
         }
@@ -78,54 +80,78 @@ class BookController extends Controller
      * @Route("/book/edit/{bookId}", name="editBook")
      * @IsGranted("ROLE_USER")
      */
-    public function editBookAction($bookId, Request $request)
+    public function editBookAction($bookId, Request $request, FileHandler $fileHandler, CoverHandler $coverHandler)
     {
         $manager = $this->getDoctrine()->getManager();
 
         $bookEntity = $manager->getRepository('AppBundle:Book')->findOneBy(['id' => $bookId]);
 
-        //$bookEntity = new Book();
-
-        //$bookEntity->setCover((new Cover()));
-
+        if (empty($bookEntity)) {
+            return $this->render('library/errors/notFound.html.twig');
+        }
 
         $form = $this->createForm(
             BookType::class,
             $bookEntity,
             [
-                'em' => $this->getDoctrine()->getManager(),
-                'container' => $this->container,
                 'isEdit' => true,
             ]
         );
 
-        $data = $form->getData();
-        throw new \Exception(var_dump($data->getCover()));
-
+        $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            //$this->getDoctrine()->getManager()->persist($bookEntity);
-            //$this->getDoctrine()->getManager()->flush();
+            $uploadedCover = $form->get('upload_cover')->getData();
+            $uploadedFile = $form->get('upload_file')->getData();
+
+            if ($form->has('delete_cover')) {
+                $deleteCover = $form->get('delete_cover')->getData();
+            }
+            if ($form->has('delete_file')) {
+                $deleteFile = $form->get('delete_file')->getData();
+            }
+
+            if ((($uploadedCover instanceof UploadedFile) || !empty($deleteCover)) && !empty($bookEntity->getCover())) {
+                $manager->remove($bookEntity->getCover());
+                $bookEntity->setCover(null);
+            }
+
+            if ((($uploadedFile instanceof UploadedFile) || !empty($deleteFile)) && !empty($bookEntity->getFile())) {
+                $manager->remove($bookEntity->getFile());
+                $bookEntity->setFile(null);
+            }
+
+            if ($coverEntity = $coverHandler->upload($uploadedCover)) {
+                $bookEntity->setCover($coverEntity);
+            }
+
+            if ($fileEntity = $fileHandler->upload($uploadedFile)) {
+                $bookEntity->setFile($fileEntity);
+            }
+
+            $manager->merge($bookEntity);
+            $manager->flush();
+
+            return $this->redirectToRoute('editBook', ['bookId' => $bookId]);
         }
 
 
-        return $this->render('library/forms/addBook.html.twig', [
+        return $this->render('library/forms/editBook.html.twig', [
             'form' => $form->createView(),
+            'book' => $bookEntity,
         ]);
     }
 
     /**
      * @Route("/book/download/{bookId}", name="downloadBook")
      */
-    public function downloadBookAction($bookId)
+    public function downloadBookAction($bookId, FileHandler $fileHandler)
     {
-        $fileController = new FileHandler($this->container, $this->getDoctrine());
-
         $manager = $this->getDoctrine()->getManager();
 
         $book = $manager->getRepository('AppBundle:Book')->find($bookId);
 
         if ($book->getAllowDownloading()) {
-            return ($book->getFile()) ? $fileController->downloadPageByEntity($book->getFile()) : false;
+            return ($book->getFile()) ? $fileHandler->downloadPageByEntity($book->getFile()) : false;
         } else {
             return false;
         }

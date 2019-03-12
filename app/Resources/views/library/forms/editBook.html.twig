@@ -7,7 +7,6 @@
     {{ form_label(form.name) }}
     <br>
     {{ form_widget(form.name) }}
-    {{ form_errors(form.name) }}
 
     <br>
     <br>
@@ -15,7 +14,6 @@
     {{ form_label(form.author) }}
     <br>
     {{ form_widget(form.author) }}
-    {{ form_errors(form.author) }}
 
     <br>
     <br>
@@ -25,6 +23,16 @@
     {{ form_widget(form.upload_cover) }}
     {{ form_errors(form.upload_cover) }}
 
+    {% if book.cover|length %}
+        {% if book.cover.path|length %}
+            <div class="book-upload-preview-image">
+                <img src="{{cover_path ~ book.cover.path }}">
+            </div>
+            {{ form_label(form.delete_cover) }}
+            {{ form_widget(form.delete_cover) }}
+        {% endif %}
+    {% endif %}
+
     <br>
     <br>
 
@@ -33,6 +41,17 @@
     {{ form_widget(form.upload_file) }}
     {{ form_errors(form.upload_file) }}
 
+    {% if book.file|length %}
+        {% if book.file.actualName|length %}
+            <br>
+            <div class="book-upload-preview-file">
+                {{ book.file.actualName }}
+            </div>
+            <br>
+            {{ form_label(form.delete_file) }}
+            {{ form_widget(form.delete_file) }}
+        {% endif %}
+    {% endif %}
     <br>
     <br>
 
@@ -48,7 +67,7 @@
     <br>
     <br>
 
-    {{ form_row(form.submit, {'label': 'Добавить'}) }}
+    {{ form_row(form.submit, {'label': 'Изменить'}) }}
 
     <br>
     <br>
