@@ -43,7 +43,7 @@ class Book
     /**
      * @var Cover
      *
-     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Cover")
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Cover", cascade={"persist"})
      * @ORM\JoinColumn(name="cover", referencedColumnName="id")
      */
     private $cover;
@@ -51,7 +51,7 @@ class Book
     /**
      * @var File
      *
-     * @ORM\OneToOne(targetEntity="AppBundle\Entity\File")
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\File", cascade={"persist"})
      * @ORM\JoinColumn(name="file", referencedColumnName="id")
      */
     private $file;
@@ -74,9 +74,6 @@ class Book
     public function __construct()
     {
         $this->dateOfReading = new \DateTime();
-        $this->cover = new Cover();
-        $this->file = new File();
-        //$this->cover->setPath('/0xZsaJCQmP/f10e2875879b1bbb556b8139d84e92c0.jpeg');
     }
 
     /**

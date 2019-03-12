@@ -3,8 +3,6 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * File
@@ -44,14 +42,6 @@ class File
      */
     private $creationTime;
 
-    /**
-     * @var UploadedFile|null
-     * @Assert\File(
-     *     mimeTypes = {"application/pdf"},
-     *     maxSize = "5Mi"
-     * )
-     */
-    private $file;
 
     public function __construct()
     {
@@ -138,24 +128,5 @@ class File
     public function getCreationTime()
     {
         return $this->creationTime;
-    }
-
-    /**
-     * @return UploadedFile|null
-     */
-    public function getFile()
-    {
-        return $this->file;
-    }
-
-    /**
-     * @param UploadedFile|null $file
-     * @return File
-     */
-    public function setFile($file)
-    {
-        $this->file = $file;
-
-        return $this;
     }
 }

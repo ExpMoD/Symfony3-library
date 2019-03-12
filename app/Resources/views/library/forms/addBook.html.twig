@@ -18,29 +18,36 @@
     <br>
     <br>
 
-    {{ form_widget(form.cover.id) }}
-
-    {{ form_label(form.cover.file) }}
+    {{ form_label(form.upload_cover) }}
     <br>
-    {{ form_widget(form.cover.file) }}
-    <br>
+    {{ form_widget(form.upload_cover) }}
+    {{ form_errors(form.upload_cover) }}
 
-    {% if form.cover.path.vars.value %}
-        <div class="book-upload-preview-image">
-            <img src="{{cover_path ~ form.cover.path.vars.value }}">
-        </div>
+    {% if form.cover is defined %}
+        {% if form.cover.path.vars.value %}
+            <div class="book-upload-preview-image">
+                <img src="{{cover_path ~ form.cover.path.vars.value }}">
+            </div>
+        {% endif %}
     {% endif %}
 
     <br>
     <br>
 
-    {{ form_widget(form.cover.id) }}
-
-    {{ form_label(form.file.file) }}
+    {{ form_label(form.upload_file) }}
     <br>
-    {{ form_widget(form.file.file) }}
-    <br>
+    {{ form_widget(form.upload_file) }}
+    {{ form_errors(form.upload_file) }}
 
+    {% if form.file is defined %}
+        {#
+        {% if form.file.path.vars.value %}
+            <div class="book-upload-preview-file">
+                <img src="{{file_path ~ form.file.path.vars.value }}">
+            </div>
+        {% endif %}
+        #}
+    {% endif %}
     <br>
     <br>
 

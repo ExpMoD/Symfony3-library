@@ -4,7 +4,6 @@ namespace AppBundle\Service;
 
 use AppBundle\Entity\Cover;
 use Doctrine\Common\Persistence\ManagerRegistry;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\ORMException;
 use http\Exception;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -25,11 +24,6 @@ class CoverHandler
      */
     protected $managerRegistry;
 
-    /**
-     * @var EntityManager
-     */
-    protected $entityManager;
-
 
     /**
      * CoverHandler constructor.
@@ -40,32 +34,33 @@ class CoverHandler
     {
         $this->container = $container;
         $this->managerRegistry = $managerRegistry;
-        $this->entityManager = $managerRegistry->getManager();
     }
 
     /**
-     * @param UploadedFile $file
+     * @param mixed $file
      * @return Cover|bool
      */
-    public function upload(UploadedFile $file)
+    public function upload($file)
     {
         $sCoverDir = $this->container->getParameter('cover_directory');
         $sRandomDir = substr(str_replace(['+', '/', '='], '', base64_encode(random_bytes(10))), 0, 10);
 
-        try {
-            $sFileName = md5(uniqid()) . '.' . $file->guessExtension();
-            $sOriginalName = $file->getClientOriginalName();
+        if ($file instanceof UploadedFile) {
+            try {
+                $sFileName = md5(uniqid()) . '.' . $file->guessExtension();
+                $sOriginalName = $file->getClientOriginalName();
 
-            $arFile = $file->move($sCoverDir . $sRandomDir, $sFileName);
+                $arFile = $file->move($sCoverDir . $sRandomDir, $sFileName);
 
-            if (!empty($arFile)) {
-                $coverEntity = new Cover();
-                $coverEntity->setPath($sRandomDir . '/' . $sFileName);
-                $coverEntity->setActualName($sOriginalName);
+                if (!empty($arFile)) {
+                    $coverEntity = new Cover();
+                    $coverEntity->setPath($sRandomDir . '/' . $sFileName);
+                    $coverEntity->setActualName($sOriginalName);
 
-                return $coverEntity;
+                    return $coverEntity;
+                }
+            } catch (ORMException $e) {
             }
-        } catch (ORMException $e) {
         }
 
         return false;
@@ -92,8 +87,8 @@ class CoverHandler
             $fileEntity = $this->get($id);
 
             if (!!$fileEntity) {
-                $this->entityManager->remove($fileEntity);
-                $this->entityManager->flush();
+                $this->managerRegistry->getManager()->remove($fileEntity);
+                $this->managerRegistry->getManager()->flush();
                 return true;
             } else {
                 return false;
@@ -112,8 +107,8 @@ class CoverHandler
     {
         try {
             if (!!$entity) {
-                $this->entityManager->remove($entity);
-                $this->entityManager->flush();
+                $this->managerRegistry->getManager()->remove($entity);
+                $this->managerRegistry->getManager()->flush();
                 return true;
             } else {
                 return false;

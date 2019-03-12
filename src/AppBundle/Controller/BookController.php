@@ -3,16 +3,13 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Book;
-use AppBundle\Entity\Cover;
 use AppBundle\Form\BookType;
 use AppBundle\Service\CoverHandler;
 use AppBundle\Service\FileHandler;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Validator\Constraints\Valid;
 
 class BookController extends Controller
 {
@@ -57,34 +54,20 @@ class BookController extends Controller
             $bookEntity
         );
 
-
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            //$uploadedCover = $request->files->get('app_bundle_book')['cover'];
-            //$uploadedFile = $request->files->get('app_bundle_book')['file'];
-
-            $uploadedCover = $bookEntity->getCover();
-            $uploadedFile = $bookEntity->getFile();
-
-
-            var_dump($uploadedCover);
-
-            /*if ($uploadedCover && get_class($uploadedCover) == UploadedFile::class) {
-                if ($coverEntity = $coverHandler->upload($uploadedCover)) {
-                    $bookEntity->setCover($coverEntity);
-                }
+            if ($coverEntity = $coverHandler->upload($form->get('upload_cover')->getData())) {
+                $bookEntity->setCover($coverEntity);
             }
 
-            if ($uploadedFile && get_class($uploadedFile) == UploadedFile::class) {
-                if ($fileEntity = $fileHandler->upload($uploadedFile)) {
-                    $bookEntity->setFile($fileEntity);
-                }
+            if ($fileEntity = $fileHandler->upload($form->get('upload_file')->getData())) {
+                $bookEntity->setFile($fileEntity);
             }
 
             $this->getDoctrine()->getManager()->persist($bookEntity);
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('addBook');*/
+            return $this->redirectToRoute('addBook');
         }
         return $this->render('library/forms/addBook.html.twig', [
             'form' => $form->createView(),
@@ -93,6 +76,7 @@ class BookController extends Controller
 
     /**
      * @Route("/book/edit/{bookId}", name="editBook")
+     * @IsGranted("ROLE_USER")
      */
     public function editBookAction($bookId, Request $request)
     {

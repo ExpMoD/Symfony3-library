@@ -2,13 +2,13 @@
 
 namespace AppBundle\Form;
 
-use AppBundle\Entity\File;
+use AppBundle\Entity\Cover;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class FileBookType extends AbstractType
+class CoverBookType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -21,7 +21,7 @@ class FileBookType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'data_class' => File::class,
+                'data_class' => Cover::class,
             ]);
     }
 }
