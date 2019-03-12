@@ -17,24 +17,9 @@ class BookController extends Controller
     /**
      * @Route("/", name="index")
      */
-    public function index(int $page = 1)
+    public function index()
     {
-        $coverDir = $this->container->getParameter('cover_path');
-        $fileDir = $this->container->getParameter('file_path');
-
-        $rsBooks = $this->getDoctrine()->getRepository('AppBundle:Book')->findBy([], ['dateOfReading' => 'DESC']);
-
-        $arBooks = [];
-        foreach ($rsBooks as $book) {
-            $arBooks[] = [
-                "ID" => $book->getId(),
-                "NAME" => $book->getName(),
-                "AUTHOR" => $book->getAuthor(),
-                "COVER" => ($book->getCover()) ? $coverDir . "/" . $book->getCover()->getFileName() : false,
-                "FILE" => $this->generateUrl('downloadBook', ['bookId' => $book->getId()]),
-                "ALLOW_DOWNLOADING" => $book->getAllowDownloading(),
-            ];
-        }
+        $arBooks = $this->getDoctrine()->getRepository('AppBundle:Book')->findBy([], ['dateOfReading' => 'DESC']);
 
         return $this->render('library/index.html.twig', [
             'title' => "Библиотека книг",

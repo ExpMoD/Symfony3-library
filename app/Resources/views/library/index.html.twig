@@ -5,17 +5,21 @@
         {% for book in books %}
             <div class="book-list-row">
                 <div class="book-list-row-cover">
-                    <img src="{{ book.COVER }}">
+                    {% if book.cover|length %}
+                        <img src="{{ cover_path ~ book.cover.path }}">
+                    {% else %}
+                        <img src="{{ asset('images/default_cover.png') }}" alt="">
+                    {% endif %}
                 </div>
                 <div class="book-list-row-name">{{ book.NAME }}</div>
                 <div class="book-list-row-author">Автор: <b>{{ book.AUTHOR }}</b></div>
 
                 <div class="book-list-row-button_block">
-                    {%  if book.ALLOW_DOWNLOADING and book.FILE %}
-                        <div class="book-list-row-download"><a href="{{ book.FILE }}">Скачать</a></div>
+                    {%  if book.allowDownloading and book.file|length %}
+                        <div class="book-list-row-download"><a href="{{ file_path ~ book.file.path }}" download="true">Скачать</a></div>
                     {% endif %}
                     {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                        <div class="book-list-row-edit"><a href="{{ path('editBook', {"bookId": book.ID}) }}">Редактировать</a></div>
+                        <div class="book-list-row-edit"><a href="{{ path('editBook', {"bookId": book.id}) }}">Редактировать</a></div>
                     {% endif %}
                 </div>
             </div>
