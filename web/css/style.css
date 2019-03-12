@@ -83,3 +83,13 @@
 .book-list-row .book-list-row-button_block {
   width: 150px;
 }
+.book-upload-preview-image {
+  margin-top: 10px;
+  border: 1px solid #828282;
+  width: 70px;
+  height: 70px;
+}
+.book-upload-preview-image img {
+  max-width: 70px;
+  max-height: 70px;
+}

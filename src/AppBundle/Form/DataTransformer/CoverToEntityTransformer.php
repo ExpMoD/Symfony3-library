@@ -13,6 +13,8 @@ use AppBundle\Service\CoverHandler;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class CoverToEntityTransformer implements DataTransformerInterface
 {
@@ -26,13 +28,20 @@ class CoverToEntityTransformer implements DataTransformerInterface
     private $container;
 
     /**
+     * @var RequestStack
+     */
+    private $request;
+
+    /**
      * @param ContainerInterface $container
      * @param CoverHandler $coverHandler
+     * @param RequestStack $request
      */
-    public function __construct(ContainerInterface $container, CoverHandler $coverHandler)
+    public function __construct(ContainerInterface $container, CoverHandler $coverHandler, RequestStack $request)
     {
         $this->container = $container;
         $this->coverHandler = $coverHandler;
+        $this->request = $request->getCurrentRequest();
     }
 
     /**
@@ -56,6 +65,8 @@ class CoverToEntityTransformer implements DataTransformerInterface
         } elseif ($iCoverId = $uploadedCover->getId()) {
             $uploadedCover = $this->coverHandler->get($iCoverId);
         }
+
+        $uploadedCover->setFile($oUploadedFile);
 
         return $uploadedCover;
     }

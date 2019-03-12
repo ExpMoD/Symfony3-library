@@ -150,7 +150,7 @@ class File
 
     /**
      * @param UploadedFile|null $file
-     * @return Cover
+     * @return File
      */
     public function setFile($file)
     {

@@ -36,6 +36,7 @@ twig:
     debug: '%kernel.debug%'
     strict_variables: '%kernel.debug%'
     globals:
+        file_path: '%file_path%'
         cover_path: '%cover_path%'
 
 # Doctrine Configuration

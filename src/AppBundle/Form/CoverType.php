@@ -12,7 +12,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\Validator\Constraints\File as FileConstraints;
+use Symfony\Component\Validator\Constraints\Image as ImageConstraints;
 
 class CoverType extends AbstractType
 {
@@ -37,8 +38,10 @@ class CoverType extends AbstractType
     {
         $builder
             ->add('id', HiddenType::class)
+            ->add('path', HiddenType::class)
             ->add('file', FileType::class, [
                 'label' => 'Обложка',
+                'required' => true,
             ])
             ->addModelTransformer($this->transformer);
     }
