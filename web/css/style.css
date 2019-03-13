@@ -54,6 +54,18 @@
 .wrapper .block.header .button:hover {
   color: #000;
 }
+.wrapper .block.block-alert {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 30px;
+}
+.wrapper .block.block-alert.block-alert-success {
+  background-color: #d4ffc3;
+}
+.wrapper .block.block-alert.block-alert-error {
+  background-color: #ffc1c1;
+}
 .wrapper .block.body {
   min-height: 300px;
 }

@@ -33,6 +33,15 @@
         {% endblock %}
     </div>
 
+    {% for type, messages in app.flashes(['success', 'error']) %}
+        {% for message in messages %}
+            <div class="block block-alert block-alert-{{ type }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {%  endfor %}
+
+
     <div class="block body">
         {% block body %}{% endblock %}
     </div>

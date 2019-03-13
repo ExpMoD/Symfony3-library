@@ -73,4 +73,7 @@
     <br>
 
     {{ form_end(form) }}
+
+
+    <a href="{{ path('deleteBook', {'bookId': book.id}) }}">Удалить книгу</a>
 {% endblock %}

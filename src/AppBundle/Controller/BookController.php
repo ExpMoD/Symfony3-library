@@ -72,7 +72,8 @@ class BookController extends Controller
         $bookEntity = $manager->getRepository('AppBundle:Book')->findOneBy(['id' => $bookId]);
 
         if (empty($bookEntity)) {
-            return $this->render('library/errors/notFound.html.twig');
+            $this->addFlash('error', 'Страницы не существует');
+            return $this->redirectToRoute('index');
         }
 
         $form = $this->createForm(
@@ -127,18 +128,24 @@ class BookController extends Controller
     }
 
     /**
-     * @Route("/book/download/{bookId}", name="downloadBook")
+     * @Route("/book/delete/{bookId}", name="deleteBook")
+     * @IsGranted("ROLE_USER")
      */
-    public function downloadBookAction($bookId, FileHandler $fileHandler)
+    public function deleteBookAction($bookId)
     {
         $manager = $this->getDoctrine()->getManager();
 
-        $book = $manager->getRepository('AppBundle:Book')->find($bookId);
+        $bookEntity = $manager->getRepository('AppBundle:Book')->findOneBy(['id' => $bookId]);
 
-        if ($book->getAllowDownloading()) {
-            return ($book->getFile()) ? $fileHandler->downloadPageByEntity($book->getFile()) : false;
+        if (!empty($bookEntity)) {
+            $manager->remove($bookEntity);
+            $manager->flush();
+
+            $this->addFlash('success', 'Книга успешно удалена');
         } else {
-            return false;
+            $this->addFlash('error', 'Данного события не существует');
         }
+
+        return $this->redirectToRoute('index');
     }
 }
