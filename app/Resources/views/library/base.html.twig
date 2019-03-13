@@ -43,6 +43,12 @@
 
 
     <div class="block body">
+        {% if subtitle is defined %}
+            <div class="subtitle">
+                {{ subtitle  }}
+            </div>
+        {% endif %}
+
         {% block body %}{% endblock %}
     </div>
 </div>

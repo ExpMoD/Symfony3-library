@@ -4,25 +4,35 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Book;
 use AppBundle\Form\BookType;
+use AppBundle\Repository\BookRepository;
 use AppBundle\Service\CoverHandler;
 use AppBundle\Service\FileHandler;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 
 class BookController extends Controller
 {
     /**
      * @Route("/", name="index")
      */
-    public function index()
+    public function index(Request $request, BookRepository $bookRepository)
     {
-        $arBooks = $this->getDoctrine()->getRepository('AppBundle:Book')->findBy([], ['dateOfReading' => 'DESC']);
+        $paginator = $this->get('knp_paginator');
+        $page = $request->query->getInt('page', 1);
+        $itemPerPage = $this->container->getParameter('items_per_page');
+
+        $arBooks = $paginator->paginate(
+            $bookRepository->getAllBooks(),
+            $page,
+            $itemPerPage
+        );
 
         return $this->render('library/index.html.twig', [
-            'title' => "Библиотека книг",
+            'title' => 'Библиотека книг',
+            'subtitle' => 'Список книг',
             'books' => $arBooks,
         ]);
     }
@@ -54,9 +64,12 @@ class BookController extends Controller
             $manager->persist($bookEntity);
             $manager->flush();
 
-            return $this->redirectToRoute('addBook');
+            $this->addFlash('success', 'Книга успешно добавлена');
+            return $this->redirectToRoute('index');
         }
         return $this->render('library/forms/addBook.html.twig', [
+            'title' => 'Добавление книги',
+            'subtitle' => 'Добавление книги',
             'form' => $form->createView(),
         ]);
     }
@@ -122,6 +135,8 @@ class BookController extends Controller
 
 
         return $this->render('library/forms/editBook.html.twig', [
+            'title' => 'Редактирование книги',
+            'subtitle' => 'Редактирование книги',
             'form' => $form->createView(),
             'book' => $bookEntity,
         ]);

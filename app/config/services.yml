@@ -7,6 +7,8 @@ parameters:
     cover_path: '/uploads/covers/'
     cover_directory: '%kernel.root_dir%/../web%cover_path%'
 
+    items_per_page: 3
+
 services:
     # default configuration for services in *this* file
     _defaults:
