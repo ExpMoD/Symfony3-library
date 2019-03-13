@@ -7,8 +7,10 @@ use AppBundle\Form\BookType;
 use AppBundle\Repository\BookRepository;
 use AppBundle\Service\CoverHandler;
 use AppBundle\Service\FileHandler;
+use Knp\Component\Pager\Paginator;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Cache\Adapter\TagAwareAdapter;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -18,17 +20,26 @@ class BookController extends Controller
     /**
      * @Route("/", name="index")
      */
-    public function index(Request $request, BookRepository $bookRepository)
+    public function index(Request $request, BookRepository $bookRepository, TagAwareAdapter $cache, Paginator $paginator)
     {
-        $paginator = $this->get('knp_paginator');
         $page = $request->query->getInt('page', 1);
-        $itemPerPage = $this->container->getParameter('items_per_page');
+        $itemPerPage = $this->getParameter('items_per_page');
 
-        $arBooks = $paginator->paginate(
-            $bookRepository->getAllBooks(),
-            $page,
-            $itemPerPage
-        );
+        $cacheItem = $cache->getItem('book_list_page_' . $page);
+
+        if ($cacheItem->isHit()) {
+            $arBooks = $cacheItem->get();
+        } else {
+            $arBooks = $paginator->paginate(
+                $bookRepository->getAllBooks(),
+                $page,
+                $itemPerPage
+            );
+
+            $cacheItem->set($arBooks);
+            $cacheItem->tag($this->getParameter('book_list_cache_key'));
+            $cache->save($cacheItem);
+        }
 
         return $this->render('library/index.html.twig', [
             'title' => 'Библиотека книг',
@@ -41,7 +52,7 @@ class BookController extends Controller
      * @Route("/book/add", name="addBook")
      * @IsGranted("ROLE_USER")
      */
-    public function addBookAction(Request $request, FileHandler $fileHandler, CoverHandler $coverHandler)
+    public function addBookAction(Request $request, FileHandler $fileHandler, CoverHandler $coverHandler, TagAwareAdapter $cache)
     {
         $manager = $this->getDoctrine()->getManager();
         $bookEntity = new Book();
@@ -64,6 +75,8 @@ class BookController extends Controller
             $manager->persist($bookEntity);
             $manager->flush();
 
+            $cache->invalidateTags([$this->getParameter('book_list_cache_key')]);
+
             $this->addFlash('success', 'Книга успешно добавлена');
             return $this->redirectToRoute('index');
         }
@@ -78,7 +91,7 @@ class BookController extends Controller
      * @Route("/book/edit/{bookId}", name="editBook")
      * @IsGranted("ROLE_USER")
      */
-    public function editBookAction($bookId, Request $request, FileHandler $fileHandler, CoverHandler $coverHandler)
+    public function editBookAction($bookId, Request $request, FileHandler $fileHandler, CoverHandler $coverHandler, TagAwareAdapter $cache)
     {
         $manager = $this->getDoctrine()->getManager();
 
@@ -130,7 +143,10 @@ class BookController extends Controller
             $manager->merge($bookEntity);
             $manager->flush();
 
-            return $this->redirectToRoute('editBook', ['bookId' => $bookId]);
+            $cache->invalidateTags([$this->getParameter('book_list_cache_key')]);
+
+            $this->addFlash('success', 'Книга успешно обновлена');
+            return $this->redirectToRoute('index');
         }
 
 
@@ -146,7 +162,7 @@ class BookController extends Controller
      * @Route("/book/delete/{bookId}", name="deleteBook")
      * @IsGranted("ROLE_USER")
      */
-    public function deleteBookAction($bookId)
+    public function deleteBookAction($bookId, TagAwareAdapter $cache)
     {
         $manager = $this->getDoctrine()->getManager();
 
@@ -155,6 +171,8 @@ class BookController extends Controller
         if (!empty($bookEntity)) {
             $manager->remove($bookEntity);
             $manager->flush();
+
+            $cache->invalidateTags([$this->getParameter('book_list_cache_key')]);
 
             $this->addFlash('success', 'Книга успешно удалена');
         } else {

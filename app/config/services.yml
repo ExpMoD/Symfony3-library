@@ -8,6 +8,7 @@ parameters:
     cover_directory: '%kernel.root_dir%/../web%cover_path%'
 
     items_per_page: 3
+    book_list_cache_key: 'book_list_pages'
 
 services:
     # default configuration for services in *this* file
@@ -20,11 +21,15 @@ services:
         # if you need to do this, you can override this setting on individual services
         public: false
 
+    Symfony\Component\Cache\Adapter\TagAwareAdapter:
+        arguments: [ '@app.cache.file']
+
+    Knp\Component\Pager\Paginator:
 
     # Обработчик файлов
-    AppBubdle\Service\FileHandler:
+    AppBundle\Service\FileHandler:
     # Обработчик обложек книг
-    AppBubdle\Service\CoverHandler:
+    AppBundle\Service\CoverHandler:
 
     # makes classes in src/AppBundle available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
