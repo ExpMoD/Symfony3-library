@@ -129,9 +129,4 @@ class Cover
     {
         return $this->creationTime;
     }
-
-    public function isValid()
-    {
-        return (!empty($this->path) && !empty($this->actualName) && !empty($this->creationTime));
-    }
 }

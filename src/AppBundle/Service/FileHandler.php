@@ -5,12 +5,8 @@ namespace AppBundle\Service;
 use AppBundle\Entity\File;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\ORMException;
-use http\Exception;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class FileHandler
 {
@@ -114,63 +110,6 @@ class FileHandler
             }
         } catch (ORMException $e) {
             return false;
-        }
-    }
-
-    /**
-     * @param int $id
-     * @return BinaryFileResponse|JsonResponse
-     */
-    public function downloadPageById(int $id)
-    {
-        try {
-            $entity = $this->get($id);
-            if (!$entity) {
-                $array = [
-                    'status' => 0,
-                    'message' => 'File does not exist',
-                ];
-                $response = new JsonResponse($array, 200);
-                return $response;
-            }
-            $displayName = $entity->getActualName();
-            $fileName = $entity->getFileName();
-            $fileWithPath = $this->container->getParameter('file_directory') . "/" . $fileName;
-            $response = new BinaryFileResponse($fileWithPath);
-            $response->headers->set('Content-Type', 'text/plain');
-            $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $displayName);
-            return $response;
-        } catch (Exception $e) {
-            $array = [
-                'status' => 0,
-                'message' => 'Download error',
-            ];
-            $response = new JsonResponse($array, 400);
-            return $response;
-        }
-    }
-
-    /**
-     * @param File $id
-     * @return BinaryFileResponse|JsonResponse
-     */
-    public function downloadPageByEntity(File $entity)
-    {
-        try {
-            $displayName = $entity->getActualName();
-            $fileName = $entity->getPath();
-            $fileWithPath = $this->container->getParameter('file_directory') . "/" . $fileName;
-            $response = new BinaryFileResponse($fileWithPath);
-            $response->headers->set('Content-Type', 'text/plain');
-            $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $displayName);
-            return $response;
-        } catch (Exception $e) {
-            $array = [
-                'status' => 0,
-                'message' => 'Download error',
-            ];
-            $response = new JsonResponse($array, 400);
-            return $response;
         }
     }
 }
