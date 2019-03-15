@@ -3,9 +3,8 @@
 parameters:
     #parameter_name: value
     file_path: '/uploads/files/'
-    file_directory: '%kernel.root_dir%/../web%file_path%'
     cover_path: '/uploads/covers/'
-    cover_directory: '%kernel.root_dir%/../web%cover_path%'
+    public_directory: '%kernel.root_dir%/../web'
 
     items_per_page: 3
     book_list_cache_key: 'book_list_pages'

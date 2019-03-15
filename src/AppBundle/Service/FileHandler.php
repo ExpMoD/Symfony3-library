@@ -38,7 +38,8 @@ class FileHandler
      */
     public function upload($file)
     {
-        $sFileDir = $this->container->getParameter('file_directory');
+        $sPublicDir = $this->container->getParameter('public_directory');
+        $sFileDir = $this->container->getParameter('file_path');
         $sRandomDir = substr(str_replace(['+', '/', '='], '', base64_encode(random_bytes(10))), 0, 10);
 
         if ($file instanceof UploadedFile) {
@@ -46,7 +47,7 @@ class FileHandler
                 $sFileName = md5(uniqid()) . '.' . $file->guessExtension();
                 $sOriginalName = $file->getClientOriginalName();
 
-                $arFile = $file->move($sFileDir . $sRandomDir, $sFileName);
+                $arFile = $file->move($sPublicDir . $sFileDir . $sRandomDir, $sFileName);
 
                 if (!empty($arFile)) {
                     $fileEntity = new File();

@@ -38,7 +38,8 @@ class CoverHandler
      */
     public function upload($file)
     {
-        $sCoverDir = $this->container->getParameter('cover_directory');
+        $sPublicDir = $this->container->getParameter('public_directory');
+        $sCoverDir = $this->container->getParameter('cover_path');
         $sRandomDir = substr(str_replace(['+', '/', '='], '', base64_encode(random_bytes(10))), 0, 10);
 
         if ($file instanceof UploadedFile) {
@@ -46,7 +47,7 @@ class CoverHandler
                 $sFileName = md5(uniqid()) . '.' . $file->guessExtension();
                 $sOriginalName = $file->getClientOriginalName();
 
-                $arFile = $file->move($sCoverDir . $sRandomDir, $sFileName);
+                $arFile = $file->move($sPublicDir . $sCoverDir . $sRandomDir, $sFileName);
 
                 if (!empty($arFile)) {
                     $coverEntity = new Cover();
