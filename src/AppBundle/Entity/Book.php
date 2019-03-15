@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Proxy\Proxy;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -10,6 +11,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Table(name="books", schema="library")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\BookRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Book
 {
@@ -228,5 +230,19 @@ class Book
     public function getAllowDownloading()
     {
         return $this->allowDownloading;
+    }
+
+    /**
+     * @ORM\PostLoad()
+     */
+    public function initializeProxyClasses()
+    {
+        if ($this->cover instanceof Proxy) {
+            $this->cover->__load();
+        }
+
+        if ($this->file instanceof Proxy) {
+            $this->file->__load();
+        }
     }
 }
