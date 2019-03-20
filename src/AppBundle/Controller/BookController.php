@@ -20,8 +20,12 @@ class BookController extends Controller
     /**
      * @Route("/", name="index")
      */
-    public function index(Request $request, BookRepository $bookRepository, TagAwareAdapter $cache, Paginator $paginator)
-    {
+    public function index(
+        Request $request,
+        BookRepository $bookRepository,
+        TagAwareAdapter $cache,
+        Paginator $paginator
+    ) {
         $page = $request->query->getInt('page', 1);
         $itemPerPage = $this->getParameter('items_per_page');
 
@@ -52,8 +56,12 @@ class BookController extends Controller
      * @Route("/book/add", name="addBook")
      * @IsGranted("ROLE_USER")
      */
-    public function addBookAction(Request $request, FileHandler $fileHandler, CoverHandler $coverHandler, TagAwareAdapter $cache)
-    {
+    public function addBookAction(
+        Request $request,
+        FileHandler $fileHandler,
+        CoverHandler $coverHandler,
+        TagAwareAdapter $cache
+    ) {
         $manager = $this->getDoctrine()->getManager();
         $bookEntity = new Book();
 
@@ -91,8 +99,13 @@ class BookController extends Controller
      * @Route("/book/edit/{bookId}", name="editBook")
      * @IsGranted("ROLE_USER")
      */
-    public function editBookAction($bookId, Request $request, FileHandler $fileHandler, CoverHandler $coverHandler, TagAwareAdapter $cache)
-    {
+    public function editBookAction(
+        $bookId,
+        Request $request,
+        FileHandler $fileHandler,
+        CoverHandler $coverHandler,
+        TagAwareAdapter $cache
+    ) {
         $manager = $this->getDoctrine()->getManager();
 
         $bookEntity = $manager->getRepository('AppBundle:Book')->findOneBy(['id' => $bookId]);
