@@ -70,7 +70,7 @@ class Book
      *
      * @ORM\Column(name="allowDownloading", type="boolean")
      */
-    private $allowDownloading;
+    private $allowDownloading = false;
 
 
     public function __construct()
