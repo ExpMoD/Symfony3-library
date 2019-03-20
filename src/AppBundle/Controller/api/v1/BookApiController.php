@@ -99,8 +99,12 @@ class BookApiController extends Controller
                 $bookEntity->setName($sName);
                 $bookEntity->setAuthor($sAuthor);
 
-                if (!empty($request->get('dateOfReading'))) {
-                    $bookEntity->setDateOfReading(new \DateTime($request->get('dateOfReading')));
+                if ($dateOfReading = $request->get('dateOfReading')) {
+                    $bookEntity->setDateOfReading(new \DateTime($dateOfReading));
+                }
+
+                if (!(is_null($allowDownloading = $request->get('allowDownloading')))) {
+                    $bookEntity->setAllowDownloading(!!$allowDownloading);
                 }
 
                 $manager->persist($bookEntity);
