@@ -55,7 +55,7 @@ class BookApiController extends Controller
                         'cover' => (!empty($arBook->getCover()))
                             ? $request->getUriForPath($coverPath . $arBook->getCover()->getPath())
                             : null,
-                        'file' => (!empty($arBook->getFile()))
+                        'file' => (!empty($arBook->getFile()) && $arBook->getAllowDownloading())
                             ? $request->getUriForPath($filePath . $arBook->getFile()->getPath())
                             : null,
                     ];
