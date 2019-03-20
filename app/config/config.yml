@@ -45,6 +45,7 @@ twig:
     globals:
         file_path: '%file_path%'
         cover_path: '%cover_path%'
+        default_cover: '%default_cover%'
 
 # Doctrine Configuration
 doctrine:

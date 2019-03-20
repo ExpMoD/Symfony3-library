@@ -6,9 +6,9 @@
             <div class="book-list-row">
                 <div class="book-list-row-cover">
                     {% if book.cover|length %}
-                        <img src="{{ cover_path ~ book.cover.path }}">
+                        {{ book.cover.path|resizeCover(100, 160)|raw }}
                     {% else %}
-                        <img src="{{ asset('images/default_cover.png') }}" alt="">
+                        {{ default_cover|resizeImage(100, 120)|raw }}
                     {% endif %}
                 </div>
                 <div class="book-list-row-name">{{ book.NAME }}</div>
