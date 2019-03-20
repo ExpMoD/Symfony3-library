@@ -114,4 +114,47 @@ class BookApiController extends Controller
 
         return $response->getResponse();
     }
+
+    /**
+     * @Route("/book/{bookId}/edit", requirements={"bookId"="\d+"})
+     */
+    public function bookEditAction(int $bookId, Request $request, ResponseApiHandler $response, TagAwareAdapter $cache)
+    {
+        $manager = $this->getDoctrine()->getManager();
+
+        if (!$this->checkApiKey($request->get('api-key'))) {
+            $response->setMessage('Invalid api key', Response::HTTP_BAD_REQUEST);
+        } else {
+            $bookEntity = $manager->getRepository('AppBundle:Book')->find($bookId);
+
+            if (empty($bookEntity)) {
+                $response->setMessage('Book not found', Response::HTTP_NOT_FOUND);
+            } else {
+                if ($sName = $request->get('name')) {
+                    $bookEntity->setName($sName);
+                }
+
+                if ($sAuthor = $request->get('author')) {
+                    $bookEntity->setAuthor($sAuthor);
+                }
+
+                if ($dateOfReading = $request->get('dateOfReading')) {
+                    $bookEntity->setDateOfReading(new \DateTime($dateOfReading));
+                }
+
+                if (!(is_null($allowDownloading = $request->get('allowDownloading')))) {
+                    $bookEntity->setAllowDownloading(!!$allowDownloading);
+                }
+
+                $manager->merge($bookEntity);
+                $manager->flush();
+
+                $cache->invalidateTags([$this->getParameter('book_list_cache_key')]);
+
+                $response->setStatusCode(Response::HTTP_OK);
+            }
+        }
+
+        return $response->getResponse();
+    }
 }
