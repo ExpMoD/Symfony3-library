@@ -21,7 +21,7 @@ class BookApiController extends Controller
     /**
      * @Route("/book/list")
      */
-    public function bookList(
+    public function bookListAction(
         Request $request,
         BookRepository $bookRepository,
         ResponseApiHandler $response,
