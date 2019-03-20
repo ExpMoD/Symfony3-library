@@ -45,7 +45,7 @@ class Book
     /**
      * @var Cover
      *
-     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Cover", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Cover", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="cover", referencedColumnName="id")
      */
     private $cover;
@@ -53,7 +53,7 @@ class Book
     /**
      * @var File
      *
-     * @ORM\OneToOne(targetEntity="AppBundle\Entity\File", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\File", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="file", referencedColumnName="id")
      */
     private $file;
