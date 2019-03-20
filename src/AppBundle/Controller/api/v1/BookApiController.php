@@ -19,7 +19,7 @@ class BookApiController extends Controller
     }
 
     /**
-     * @Route("/book/list")
+     * @Route("/book/list", name="api_v1_book_list")
      */
     public function bookListAction(
         Request $request,
@@ -73,7 +73,7 @@ class BookApiController extends Controller
     }
 
     /**
-     * @Route("/book/add")
+     * @Route("/book/add", name="api_v1_book_add")
      */
     public function bookAddAction(Request $request, ResponseApiHandler $response, TagAwareAdapter $cache)
     {
@@ -120,7 +120,7 @@ class BookApiController extends Controller
     }
 
     /**
-     * @Route("/book/{bookId}/edit", requirements={"bookId"="\d+"})
+     * @Route("/book/{bookId}/edit", name="api_v1_book_edit", requirements={"bookId"="\d+"})
      */
     public function bookEditAction(int $bookId, Request $request, ResponseApiHandler $response, TagAwareAdapter $cache)
     {

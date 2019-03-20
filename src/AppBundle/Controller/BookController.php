@@ -100,7 +100,7 @@ class BookController extends Controller
      * @IsGranted("ROLE_USER")
      */
     public function editBookAction(
-        $bookId,
+        int $bookId,
         Request $request,
         FileHandler $fileHandler,
         CoverHandler $coverHandler,
