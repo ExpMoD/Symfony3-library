@@ -96,7 +96,7 @@ class BookController extends Controller
     }
 
     /**
-     * @Route("/book/edit/{bookId}", name="editBook")
+     * @Route("/book/{bookId}/edit", name="editBook", requirements={"bookId"="\d+"})
      * @IsGranted("ROLE_USER")
      */
     public function editBookAction(
@@ -172,10 +172,10 @@ class BookController extends Controller
     }
 
     /**
-     * @Route("/book/delete/{bookId}", name="deleteBook")
+     * @Route("/book/{bookId}/delete", name="deleteBook", requirements={"bookId"="\d+"})
      * @IsGranted("ROLE_USER")
      */
-    public function deleteBookAction($bookId, TagAwareAdapter $cache)
+    public function deleteBookAction(int $bookId, TagAwareAdapter $cache)
     {
         $manager = $this->getDoctrine()->getManager();
 
