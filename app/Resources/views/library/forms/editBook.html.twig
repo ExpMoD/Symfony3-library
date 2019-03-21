@@ -25,9 +25,7 @@
 
     {% if book.cover|length %}
         {% if book.cover.path|length %}
-            <div class="book-upload-preview-image">
-                <img src="{{cover_path ~ book.cover.path }}">
-            </div>
+            {{ book.cover.path|resizeCover(70, 70)|raw }}
             {{ form_label(form.delete_cover) }}
             {{ form_widget(form.delete_cover) }}
         {% endif %}

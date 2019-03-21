@@ -42,7 +42,11 @@ class ImageExtension extends AbstractExtension
     {
         $imagePath = $this->container->getParameter('cover_path') . $path;
 
-        return $this->generateImage($imagePath, $width, $height);
+        if ($this->filesystem->exists($this->container->getParameter('public_directory') . $imagePath)) {
+            return $this->generateImage($imagePath, $width, $height);
+        }
+
+        return $this->generateImage($this->container->getParameter('default_cover'), $width, $height);
     }
 
     public function generateImage(string $path, int $width, int $height)

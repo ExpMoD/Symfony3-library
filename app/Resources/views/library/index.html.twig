@@ -6,7 +6,7 @@
             <div class="book-list-row">
                 <div class="book-list-row-cover">
                     {% if book.cover|length %}
-                        {{ book.cover.path|resizeCover(100, 160)|raw }}
+                        {{ book.cover.path|resizeCover(100, 120)|raw }}
                     {% else %}
                         {{ default_cover|resizeImage(100, 120)|raw }}
                     {% endif %}
