@@ -44,7 +44,7 @@ class BookType extends AbstractType
             ->add('upload_cover', FileType::class, [
                 'label' => 'Обложка',
                 'mapped' => false,
-                'required' => !$options['isEdit'],
+                'required' => false,
                 'constraints' => [
                     new ImageConstraints([
                         'mimeTypes' => [
@@ -78,7 +78,7 @@ class BookType extends AbstractType
             ]);
 
 
-        if (!empty($bookEntity) && $options['isEdit']) {
+        if (!empty($bookEntity)) {
             if ($bookEntity->getCover() instanceof Cover) {
                 $builder->add(
                     'delete_cover',
@@ -114,7 +114,6 @@ class BookType extends AbstractType
         $resolver
             ->setDefaults([
                 'data_class' => Book::class,
-                'isEdit' => false,
             ]);
     }
 

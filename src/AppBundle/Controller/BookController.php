@@ -88,6 +88,7 @@ class BookController extends Controller
             $this->addFlash('success', 'Книга успешно добавлена');
             return $this->redirectToRoute('index');
         }
+
         return $this->render('library/forms/addBook.html.twig', [
             'title' => 'Добавление книги',
             'subtitle' => 'Добавление книги',
@@ -117,10 +118,7 @@ class BookController extends Controller
 
         $form = $this->createForm(
             BookType::class,
-            $bookEntity,
-            [
-                'isEdit' => true,
-            ]
+            $bookEntity
         );
 
         $form->handleRequest($request);
@@ -161,7 +159,6 @@ class BookController extends Controller
             $this->addFlash('success', 'Книга успешно обновлена');
             return $this->redirectToRoute('index');
         }
-
 
         return $this->render('library/forms/editBook.html.twig', [
             'title' => 'Редактирование книги',
